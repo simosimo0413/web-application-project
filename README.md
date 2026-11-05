@@ -8,3 +8,4 @@ Tecnologie:
 -Angular
 -Java e Spring boot
 -PostgreSQL
+
