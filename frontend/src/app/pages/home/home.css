@@ -1,46 +1,70 @@
 
 .hero {
-  padding: 100px 20px;
+  background: linear-gradient(135deg, #175cd3, #0b356b);
+  color: white;
+  padding: 90px 20px;
   text-align: center;
-  background-color: #eff6ff;
 }
 
 .hero h1 {
   font-size: 40px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .hero p {
-  font-size: 18px;
+  max-width: 600px;
+  margin: 0 auto 28px;
+  line-height: 1.6;
 }
 
-.hero-button {
+.pulsante {
   display: inline-block;
-  padding: 14px 28px;
-  margin-top: 20px;
+  background: white;
+  color: #175cd3;
+  padding: 12px 24px;
   border-radius: 8px;
-  background-color: #2563eb;
-  color: white;
+  font-weight: bold;
   text-decoration: none;
-  font-weight: 500;
 }
 
-.hero-button:hover {
-  background-color: #1d4ed8;
+.sezione-annunci {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 24px;
 }
 
-.annunci {
-  padding: 60px 8%;
-  text-align: center;
-  min-height: 220px;
+.sezione-annunci h2 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.sezione-annunci > p {
+  color: #667085;
+  margin-bottom: 30px;
+}
+
+.griglia-annunci {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .griglia-annunci {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 600px) {
   .hero {
-    padding: 65px 20px;
+    padding: 60px 20px;
   }
 
   .hero h1 {
-    font-size: 28px;
+    font-size: 30px;
+  }
+
+  .griglia-annunci {
+    grid-template-columns: 1fr;
   }
 }

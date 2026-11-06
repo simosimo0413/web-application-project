@@ -1,16 +1,23 @@
 
-<main>
-  <section class="hero">
-    <h1>Trova la casa perfetta per te</h1>
-    <p>Scopri immobili in vendita e in affitto.</p>
+<section class="hero">
+  <h1>Trova la casa perfetta per te</h1>
+  <p>
+    Scopri immobili in vendita e in affitto
+    e trova la soluzione più adatta alle tue esigenze.
+  </p>
+  <a href="#annunci" class="pulsante">
+    Esplora gli immobili
+  </a>
+</section>
 
-    <a class="hero-button" href="#annunci">
-      Esplora gli immobili
-    </a>
-  </section>
+<section class="sezione-annunci" id="annunci">
+  <h2>Immobili in evidenza</h2>
+  <p>Scopri alcune delle nostre proposte immobiliari.</p>
 
-  <section id="annunci" class="annunci">
-    <h2>Immobili in evidenza</h2>
-    <p>Qui mostreremo gli annunci disponibili.</p>
-  </section>
-</main>
+  <div class="griglia-annunci">
+    <app-immobile-card
+      *ngFor="let annuncio of annunci"
+      [annuncio]="annuncio">
+    </app-immobile-card>
+  </div>
+</section>

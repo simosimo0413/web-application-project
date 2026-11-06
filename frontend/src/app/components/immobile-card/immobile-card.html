@@ -1,0 +1,42 @@
+
+<article class="immobile-card">
+
+  <div class="immagine">
+    <img
+      *ngIf="annuncio.fotoPrincipale; else senzaFoto"
+      [src]="annuncio.fotoPrincipale"
+      [alt]="annuncio.titolo"
+    />
+
+    <ng-template #senzaFoto>
+      <div class="segnaposto">
+        Foto non disponibile
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="contenuto">
+    <span class="contratto">
+      {{ annuncio.tipoContratto }}
+    </span>
+
+    <h3>{{ annuncio.titolo }}</h3>
+
+    <p class="categoria">{{ annuncio.categoria }}</p>
+
+    <p class="prezzo-precedente"
+       *ngIf="annuncio.prezzoPrecedente">
+      {{ annuncio.prezzoPrecedente | currency:'EUR' }}
+    </p>
+
+    <p class="prezzo">
+      {{ annuncio.prezzo | currency:'EUR' }}
+    </p>
+
+    <div class="dettagli">
+      <span>📍 {{ annuncio.citta }}</span>
+      <span>📐 {{ annuncio.superficieMq }} m²</span>
+    </div>
+  </div>
+
+</article>
