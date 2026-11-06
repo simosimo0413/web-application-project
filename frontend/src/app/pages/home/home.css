@@ -1,0 +1,46 @@
+
+.hero {
+  padding: 100px 20px;
+  text-align: center;
+  background-color: #eff6ff;
+}
+
+.hero h1 {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.hero p {
+  font-size: 18px;
+}
+
+.hero-button {
+  display: inline-block;
+  padding: 14px 28px;
+  margin-top: 20px;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.hero-button:hover {
+  background-color: #1d4ed8;
+}
+
+.annunci {
+  padding: 60px 8%;
+  text-align: center;
+  min-height: 220px;
+}
+
+@media (max-width: 600px) {
+  .hero {
+    padding: 65px 20px;
+  }
+
+  .hero h1 {
+    font-size: 28px;
+  }
+}
