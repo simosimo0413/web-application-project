@@ -40,7 +40,7 @@ caricaAnnunci(): void {
   this.caricamento = true;
   this.errore = false;
 
-  this.annuncioService.getAnnunci().subscribe({
+  this.annuncioService.getAnnunci(this.filtri).subscribe({
     next: (dati) => {
       this.annunci = dati;
       this.caricamento = false;
