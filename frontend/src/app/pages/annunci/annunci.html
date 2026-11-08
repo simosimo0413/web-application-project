@@ -11,6 +11,66 @@
 
   <div class="contenitore">
 
+    <form class="filtri" (ngSubmit)="caricaAnnunci()">
+
+      <div class="campo">
+        <label for="citta">Città</label>
+        <input
+          id="citta"
+          name="citta"
+          type="text"
+          placeholder="Es. Cosenza"
+          [(ngModel)]="filtri.citta"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="prezzoMax">Prezzo massimo (€)</label>
+        <input
+          id="prezzoMax"
+          name="prezzoMax"
+          type="number"
+          min="0"
+          placeholder="Es. 200000"
+          [(ngModel)]="filtri.prezzoMax"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="categoria">Categoria</label>
+        <select
+          id="categoria"
+          name="categoria"
+          [(ngModel)]="filtri.categoria"
+        >
+          <option value="">Tutte le categorie</option>
+          <option value="Appartamento">Appartamento</option>
+          <option value="Villa">Villa</option>
+          <option value="Casa indipendente">Casa indipendente</option>
+          <option value="Terreno">Terreno</option>
+          <option value="Garage">Garage</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="tipoContratto">Contratto</label>
+        <select
+          id="tipoContratto"
+          name="tipoContratto"
+          [(ngModel)]="filtri.tipoContratto"
+        >
+          <option value="">Vendita e affitto</option>
+          <option value="VENDITA">Vendita</option>
+          <option value="AFFITTO">Affitto</option>
+        </select>
+      </div>
+
+      <button type="submit" class="pulsante-cerca">
+        Cerca immobili
+      </button>
+
+    </form>
+
     <p *ngIf="caricamento">
       Caricamento immobili in corso...
     </p>
@@ -38,4 +98,5 @@
     </div>
 
   </div>
+
 </section>

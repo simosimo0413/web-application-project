@@ -1,6 +1,7 @@
 
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { Annuncio } from '../../models/annuncio';
 import { AnnuncioService } from '../../services/annuncio';
@@ -9,7 +10,7 @@ import { ImmobileCard } from '../../components/immobile-card/immobile-card';
 @Component({
   selector: 'app-annunci',
   standalone: true,
-  imports: [CommonModule, ImmobileCard],
+  imports: [CommonModule, FormsModule, ImmobileCard],
   templateUrl: './annunci.html',
   styleUrl: './annunci.css'
 })
@@ -19,6 +20,14 @@ export class Annunci implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   annunci: Annuncio[] = [];
+
+  filtri = {
+    citta: '',
+    prezzoMax: null as number | null,
+    categoria: '',
+    tipoContratto: ''
+  };
+
   caricamento = true;
   errore = false;
 
