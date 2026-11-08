@@ -5,8 +5,10 @@ import it.unical.immobiliare.dto.AnnuncioCardDTO;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -20,7 +22,17 @@ public class AnnuncioController {
     }
 
     @GetMapping
-    public List<AnnuncioCardDTO> getAnnunci() {
-        return annuncioDAO.trovaAnnunciAttivi();
+    public List<AnnuncioCardDTO> getAnnunci(
+            @RequestParam(required = false) String citta,
+            @RequestParam(required = false) BigDecimal prezzoMax,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(required = false) String tipoContratto) {
+
+            return annuncioDAO.trovaAnnunciAttivi(
+                citta,
+                prezzoMax,
+                categoria,
+                tipoContratto
+            );
     }
 }

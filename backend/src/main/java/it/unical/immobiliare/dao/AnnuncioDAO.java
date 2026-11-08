@@ -4,6 +4,8 @@ import it.unical.immobiliare.dto.AnnuncioCardDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -15,9 +17,13 @@ public class AnnuncioDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<AnnuncioCardDTO> trovaAnnunciAttivi() {
+    public List<AnnuncioCardDTO> trovaAnnunciAttivi(
+            String citta,
+            BigDecimal prezzoMax,
+            String categoria,
+            String tipoContratto) {
 
-        String sql = """
+        StringBuilder sql = new StringBuilder("""
             SELECT
                 a.id,
                 a.titolo,
@@ -35,11 +41,35 @@ public class AnnuncioDAO {
                 ON f.immobile_id = i.id
                 AND f.principale = TRUE
             WHERE a.stato = 'ATTIVO'
-            ORDER BY a.data_pubblicazione DESC, a.id DESC
-            """;
+            """);
 
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-            new AnnuncioCardDTO(
+        List<Object> parametri = new ArrayList<>();
+
+        if (citta != null && !citta.isBlank()) {
+            sql.append(" AND LOWER(i.citta) LIKE LOWER(?)");
+            parametri.add("%" + citta.trim() + "%");
+        }
+
+        if (prezzoMax != null) {
+            sql.append(" AND a.prezzo <= ?");
+            parametri.add(prezzoMax);
+        }
+
+        if (categoria != null && !categoria.isBlank()) {
+            sql.append(" AND LOWER(c.nome) = LOWER(?)");
+            parametri.add(categoria.trim());
+        }
+
+        if (tipoContratto != null && !tipoContratto.isBlank()) {
+            sql.append(" AND a.tipo_contratto = ?");
+            parametri.add(tipoContratto.trim().toUpperCase());
+        }
+
+        sql.append(" ORDER BY a.data_pubblicazione DESC, a.id DESC");
+
+        return jdbcTemplate.query(
+            sql.toString(),
+            (rs, rowNum) -> new AnnuncioCardDTO(
                 rs.getLong("id"),
                 rs.getString("titolo"),
                 rs.getBigDecimal("prezzo"),
@@ -49,7 +79,8 @@ public class AnnuncioDAO {
                 rs.getString("categoria"),
                 rs.getString("tipo_contratto"),
                 rs.getString("foto_principale")
-            )
+            ),
+            parametri.toArray()
         );
     }
 }
