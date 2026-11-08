@@ -1,0 +1,69 @@
+
+.pagina-annunci {
+  min-height: 70vh;
+  background: #f8fafc;
+}
+
+.intestazione {
+  background: linear-gradient(135deg, #175cd3, #0b356b);
+  color: white;
+  text-align: center;
+  padding: 65px 20px;
+}
+
+.intestazione h1 {
+  font-size: 36px;
+  margin-bottom: 14px;
+}
+
+.intestazione p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.contenitore {
+  max-width: 1200px;
+  padding: 48px 24px;
+  margin: 0 auto;
+}
+
+.griglia-annunci {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.messaggio {
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.messaggio button {
+  padding: 10px 20px;
+  background: #175cd3;
+  border: none;
+  border-radius: 7px;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .griglia-annunci {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .intestazione {
+    padding: 45px 20px;
+  }
+
+  .intestazione h1 {
+    font-size: 28px;
+  }
+
+  .griglia-annunci {
+    grid-template-columns: 1fr;
+  }
+}

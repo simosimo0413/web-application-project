@@ -1,0 +1,41 @@
+
+<section class="pagina-annunci">
+
+  <header class="intestazione">
+    <h1>Esplora gli immobili</h1>
+    <p>
+      Scopri tutte le nostre proposte immobiliari
+      in vendita e in affitto.
+    </p>
+  </header>
+
+  <div class="contenitore">
+
+    <p *ngIf="caricamento">
+      Caricamento immobili in corso...
+    </p>
+
+    <div *ngIf="errore" class="messaggio">
+      <p>Impossibile caricare gli immobili.</p>
+      <button type="button" (click)="caricaAnnunci()">
+        Riprova
+      </button>
+    </div>
+
+    <p *ngIf="!caricamento && !errore && annunci.length === 0">
+      Nessun immobile disponibile al momento.
+    </p>
+
+    <div
+      class="griglia-annunci"
+      *ngIf="!caricamento && !errore && annunci.length > 0">
+
+      <app-immobile-card
+        *ngFor="let annuncio of annunci"
+        [annuncio]="annuncio">
+      </app-immobile-card>
+
+    </div>
+
+  </div>
+</section>
