@@ -1,8 +1,10 @@
 
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { ImmobileCard } from '../../components/immobile-card/immobile-card';
 import { Annuncio } from '../../models/annuncio';
+import { AnnuncioService } from '../../services/annuncio';
 
 @Component({
   selector: 'app-home',
@@ -11,41 +13,32 @@ import { Annuncio } from '../../models/annuncio';
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class Home {
+export class Home implements OnInit {
 
-  annunci: Annuncio[] = [
-    {
-      id: 1,
-      titolo: 'Appartamento con terrazzo',
-      prezzo: 185000,
-      prezzoPrecedente: 200000,
-      superficieMq: 95,
-      citta: 'Cosenza',
-      categoria: 'Appartamento',
-      tipoContratto: 'VENDITA',
-      fotoPrincipale: null
-    },
-    {
-      id: 2,
-      titolo: 'Villa con giardino',
-      prezzo: 320000,
-      prezzoPrecedente: null,
-      superficieMq: 180,
-      citta: 'Rende',
-      categoria: 'Villa',
-      tipoContratto: 'VENDITA',
-      fotoPrincipale: null
-    },
-    {
-      id: 3,
-      titolo: 'Bilocale in affitto',
-      prezzo: 650,
-      prezzoPrecedente: null,
-      superficieMq: 60,
-      citta: 'Catanzaro',
-      categoria: 'Appartamento',
-      tipoContratto: 'AFFITTO',
-      fotoPrincipale: null
-    }
-  ];
+  private annuncioService = inject(AnnuncioService);
+
+  annunci: Annuncio[] = [];
+  caricamento = true;
+  errore = false;
+
+  ngOnInit(): void {
+    this.caricaAnnunci();
+  }
+
+  caricaAnnunci(): void {
+    this.caricamento = true;
+    this.errore = false;
+
+    this.annuncioService.getAnnunci().subscribe({
+      next: (dati) => {
+        this.annunci = dati;
+        this.caricamento = false;
+      },
+      error: (errore) => {
+        console.error('Errore nel caricamento degli annunci:', errore);
+        this.errore = true;
+        this.caricamento = false;
+      }
+    });
+  }
 }

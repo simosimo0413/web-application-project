@@ -10,14 +10,35 @@
   </a>
 </section>
 
+
 <section class="sezione-annunci" id="annunci">
   <h2>Immobili in evidenza</h2>
   <p>Scopri alcune delle nostre proposte immobiliari.</p>
 
-  <div class="griglia-annunci">
+  <p *ngIf="caricamento">
+    Caricamento annunci in corso...
+  </p>
+
+  <div *ngIf="errore">
+    <p>Impossibile caricare gli annunci.</p>
+    <button type="button" (click)="caricaAnnunci()">
+      Riprova
+    </button>
+  </div>
+
+  <p *ngIf="!caricamento && !errore && annunci.length === 0">
+    Nessun annuncio disponibile al momento.
+  </p>
+
+  <div
+    class="griglia-annunci"
+    *ngIf="!caricamento && !errore && annunci.length > 0">
+
     <app-immobile-card
       *ngFor="let annuncio of annunci"
       [annuncio]="annuncio">
     </app-immobile-card>
+
   </div>
 </section>
+
