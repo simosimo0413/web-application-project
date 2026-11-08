@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.List;
 
+import it.unical.immobiliare.dto.AnnuncioDettaglioDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+
 @RestController
 @RequestMapping("/api/annunci")
 public class AnnuncioController {
@@ -34,5 +38,12 @@ public class AnnuncioController {
                 categoria,
                 tipoContratto
             );
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<AnnuncioDettaglioDTO> getAnnuncioPerId(
+        @PathVariable Long id) {
+    return annuncioDAO.trovaAnnuncioPerId(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

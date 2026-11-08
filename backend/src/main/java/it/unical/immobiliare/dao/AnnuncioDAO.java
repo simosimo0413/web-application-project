@@ -8,6 +8,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unical.immobiliare.dto.AnnuncioDettaglioDTO;
+import org.springframework.dao.EmptyResultDataAccessException;
+import java.util.Optional;
+
 @Repository
 public class AnnuncioDAO {
 
@@ -82,5 +86,58 @@ public class AnnuncioDAO {
             ),
             parametri.toArray()
         );
+    }
+    
+    public Optional<AnnuncioDettaglioDTO> trovaAnnuncioPerId(Long id) {
+
+        String sql = """
+            SELECT
+                a.id,
+                a.titolo,
+                i.descrizione,
+                a.prezzo,
+                a.prezzo_precedente,
+                i.superficie_mq,
+                i.indirizzo,
+                i.citta,
+                i.provincia,
+                c.nome AS categoria,
+                a.tipo_contratto,
+                f.url AS foto_principale
+            FROM annunci a
+            JOIN immobili i ON a.immobile_id = i.id
+            JOIN categorie c ON i.categoria_id = c.id
+            LEFT JOIN foto f
+                ON f.immobile_id = i.id
+                AND f.principale = TRUE
+            WHERE a.id = ?
+            AND a.stato = 'ATTIVO'
+            """;
+    
+        try {
+            AnnuncioDettaglioDTO dettaglio = jdbcTemplate.queryForObject(
+                sql,
+                (rs, rowNum) -> new AnnuncioDettaglioDTO(
+                    rs.getLong("id"),
+                    rs.getString("titolo"),
+                    rs.getString("descrizione"),
+                    rs.getBigDecimal("prezzo"),
+                    rs.getBigDecimal("prezzo_precedente"),
+                    rs.getBigDecimal("superficie_mq"),
+                    rs.getString("indirizzo"),
+                    rs.getString("citta"),
+                    rs.getString("provincia"),
+                    rs.getString("categoria"),
+                    rs.getString("tipo_contratto"),
+                    rs.getString("foto_principale")
+                ),
+                id
+            );
+    
+            return Optional.ofNullable(dettaglio);
+    
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }
