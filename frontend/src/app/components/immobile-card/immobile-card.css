@@ -76,3 +76,14 @@
   font-size: 14px;
   flex-wrap: wrap;
 }
+
+
+.link-annuncio {
+  color: inherit;
+  text-decoration: none;
+}
+
+.link-annuncio:hover {
+  color: #175cd3;
+  text-decoration: underline;
+}

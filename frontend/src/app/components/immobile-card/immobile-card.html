@@ -20,7 +20,11 @@
       {{ annuncio.tipoContratto }}
     </span>
 
-    <h3>{{ annuncio.titolo }}</h3>
+    <h3>
+  <a [routerLink]="['/annunci', annuncio.id]" class="link-annuncio">
+    {{ annuncio.titolo }}
+  </a>
+</h3>
 
     <p class="categoria">{{ annuncio.categoria }}</p>
 

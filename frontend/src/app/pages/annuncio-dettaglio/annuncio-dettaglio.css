@@ -1,0 +1,178 @@
+
+.pagina-dettaglio {
+  min-height: 70vh;
+  background: #f7f9fc;
+  padding: 48px 24px 80px;
+}
+
+.contenitore {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.torna-indietro {
+  display: inline-block;
+  margin-bottom: 28px;
+  color: #175cd3;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.torna-indietro:hover {
+  text-decoration: underline;
+}
+
+.intestazione-dettaglio {
+  margin-bottom: 28px;
+}
+
+.etichetta {
+  display: inline-block;
+  background: #e5efff;
+  color: #175cd3;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.intestazione-dettaglio h1 {
+  font-size: 34px;
+  color: #1d2939;
+  margin: 0 0 12px;
+}
+
+.posizione {
+  color: #667085;
+  font-size: 16px;
+}
+
+.immagine-principale {
+  width: 100%;
+  height: 420px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #e8edf5;
+  margin-bottom: 32px;
+}
+
+.immagine-principale img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-assente {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #667085;
+  font-size: 18px;
+}
+
+.contenuto-dettaglio {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 30px;
+  align-items: start;
+}
+
+.informazioni,
+.riepilogo-prezzo,
+.messaggio {
+  background: white;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.informazioni h2 {
+  margin: 0 0 18px;
+  color: #1d2939;
+  font-size: 22px;
+}
+
+.informazioni p {
+  color: #475467;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.caratteristiche {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.caratteristiche div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.caratteristiche strong {
+  color: #344054;
+}
+
+.caratteristiche span {
+  color: #667085;
+}
+
+.riepilogo-prezzo {
+  text-align: center;
+}
+
+.prezzo-precedente {
+  color: #98a2b3;
+  text-decoration: line-through;
+  margin-bottom: 8px;
+}
+
+.prezzo-attuale {
+  color: #175cd3;
+  font-size: 30px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.riepilogo-prezzo > p:last-child {
+  color: #667085;
+}
+
+.messaggio {
+  text-align: center;
+  color: #475467;
+}
+
+.messaggio a {
+  color: #175cd3;
+}
+
+@media (max-width: 768px) {
+  .pagina-dettaglio {
+    padding: 28px 16px 56px;
+  }
+
+  .intestazione-dettaglio h1 {
+    font-size: 27px;
+  }
+
+  .immagine-principale {
+    height: 260px;
+  }
+
+  .contenuto-dettaglio {
+    grid-template-columns: 1fr;
+  }
+
+  .caratteristiche {
+    grid-template-columns: 1fr;
+  }
+
+  .informazioni,
+  .riepilogo-prezzo {
+    padding: 20px;
+  }
+}

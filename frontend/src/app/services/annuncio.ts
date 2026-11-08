@@ -1,4 +1,4 @@
-
+import { AnnuncioDettaglio } from '../models/annuncio-dettaglio';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -20,6 +20,7 @@ export class AnnuncioService {
 
   getAnnunci(filtri?: FiltriAnnunci): Observable<Annuncio[]> {
 
+
     let params = new HttpParams();
 
     if (filtri?.citta.trim()) {
@@ -39,5 +40,9 @@ export class AnnuncioService {
     }
 
     return this.http.get<Annuncio[]>('/api/annunci', { params });
+  }
+
+    getAnnuncioPerId(id: number): Observable<AnnuncioDettaglio> {
+    return this.http.get<AnnuncioDettaglio>(`/api/annunci/${id}`);
   }
 }

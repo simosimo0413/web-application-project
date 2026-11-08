@@ -1,0 +1,112 @@
+
+<section class="pagina-dettaglio">
+
+  <div class="contenitore">
+
+    <!-- Stato di caricamento -->
+    <p *ngIf="caricamento" class="messaggio">
+      Caricamento dettagli dell'immobile...
+    </p>
+
+    <!-- Stato di errore -->
+    <div *ngIf="!caricamento && errore" class="messaggio">
+      <h2>Immobile non disponibile</h2>
+      <p>
+        Non è stato possibile trovare o caricare
+        l'immobile richiesto.
+      </p>
+      <a routerLink="/annunci">Torna agli annunci</a>
+    </div>
+
+    <!-- Dati dell'immobile -->
+    <div *ngIf="!caricamento && !errore && annuncio as immobile">
+
+      <a routerLink="/annunci" class="torna-indietro">
+        ← Torna agli annunci
+      </a>
+
+      <header class="intestazione-dettaglio">
+        <span class="etichetta">
+          {{ immobile.tipoContratto }}
+        </span>
+
+        <h1>{{ immobile.titolo }}</h1>
+
+        <p class="posizione">
+          {{ immobile.indirizzo }},
+          {{ immobile.citta }} ({{ immobile.provincia }})
+        </p>
+      </header>
+
+      <div class="immagine-principale">
+        <img
+          *ngIf="immobile.fotoPrincipale"
+          [src]="immobile.fotoPrincipale"
+          [alt]="immobile.titolo"
+        />
+
+        <div
+          *ngIf="!immobile.fotoPrincipale"
+          class="foto-assente">
+          Foto non disponibile
+        </div>
+      </div>
+
+      <div class="contenuto-dettaglio">
+
+        <div class="informazioni">
+
+          <h2>Descrizione dell'immobile</h2>
+
+          <p>
+            {{ immobile.descrizione || 'Descrizione non disponibile.' }}
+          </p>
+
+          <h2>Caratteristiche</h2>
+
+          <div class="caratteristiche">
+            <div>
+              <strong>Categoria</strong>
+              <span>{{ immobile.categoria }}</span>
+            </div>
+
+            <div>
+              <strong>Superficie</strong>
+              <span>{{ immobile.superficieMq }} m²</span>
+            </div>
+
+            <div>
+              <strong>Contratto</strong>
+              <span>{{ immobile.tipoContratto }}</span>
+            </div>
+
+            <div>
+              <strong>Città</strong>
+              <span>{{ immobile.citta }}</span>
+            </div>
+          </div>
+
+        </div>
+
+        <aside class="riepilogo-prezzo">
+
+          <p class="prezzo-precedente"
+             *ngIf="immobile.prezzoPrecedente">
+            {{ immobile.prezzoPrecedente | currency:'EUR':'symbol':'1.2-2':'it' }}
+          </p>
+
+          <p class="prezzo-attuale">
+            {{ immobile.prezzo | currency:'EUR':'symbol':'1.2-2':'it' }}
+          </p>
+
+          <p>Prezzo richiesto</p>
+
+        </aside>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
