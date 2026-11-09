@@ -1,0 +1,115 @@
+
+<section class="pagina-registrazione">
+
+  <div class="contenitore-registrazione">
+
+    <header class="intestazione">
+      <h1>Crea il tuo account</h1>
+      <p>
+        Registrati al nostro portale immobiliare
+        per accedere alle funzionalità dedicate.
+      </p>
+    </header>
+
+    <div *ngIf="successo" class="messaggio-successo" role="status">
+      <h2>Registrazione completata!</h2>
+      <p>
+        Il tuo account è stato creato correttamente.
+      </p>
+    </div>
+
+    <form
+      *ngIf="!successo"
+      #modulo="ngForm"
+      (ngSubmit)="registra()"
+      class="modulo-registrazione">
+
+      <div class="campo">
+        <label for="nome">Nome</label>
+        <input
+          id="nome"
+          name="nome"
+          type="text"
+          [(ngModel)]="dati.nome"
+          required
+          maxlength="100"
+          autocomplete="given-name"
+          placeholder="Inserisci il tuo nome"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="cognome">Cognome</label>
+        <input
+          id="cognome"
+          name="cognome"
+          type="text"
+          [(ngModel)]="dati.cognome"
+          required
+          maxlength="100"
+          autocomplete="family-name"
+          placeholder="Inserisci il tuo cognome"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="dati.email"
+          required
+          email
+          autocomplete="email"
+          placeholder="esempio@email.it"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          [(ngModel)]="dati.password"
+          required
+          minlength="8"
+          autocomplete="new-password"
+          placeholder="Almeno 8 caratteri"
+        />
+      </div>
+
+      <div class="campo campo-intero">
+        <label for="ruolo">Tipo di account</label>
+        <select
+          id="ruolo"
+          name="ruolo"
+          [(ngModel)]="dati.ruolo"
+          required>
+          <option value="ACQUIRENTE">Acquirente</option>
+          <option value="VENDITORE">Venditore</option>
+        </select>
+      </div>
+
+      <div
+        *ngIf="errore"
+        class="messaggio-errore campo-intero"
+        role="alert">
+        {{ errore }}
+      </div>
+
+      <button
+        type="submit"
+        class="pulsante-registrazione"
+        [disabled]="modulo.invalid || caricamento">
+
+        {{ caricamento ? 'Registrazione in corso...' : 'Registrati' }}
+
+      </button>
+
+    </form>
+
+  </div>
+
+</section>

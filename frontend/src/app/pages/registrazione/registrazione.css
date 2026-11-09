@@ -1,0 +1,130 @@
+
+.pagina-registrazione {
+  min-height: 75vh;
+  background: #f7f9fc;
+  padding: 60px 20px 80px;
+}
+
+.contenitore-registrazione {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.intestazione {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.intestazione h1 {
+  color: #1d2939;
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.intestazione p {
+  color: #667085;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.modulo-registrazione {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  padding: 32px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo-intero {
+  grid-column: 1 / -1;
+}
+
+.campo label {
+  color: #344054;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: white;
+  color: #1d2939;
+  font-size: 15px;
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: 2px solid #b2ccff;
+  border-color: #175cd3;
+}
+
+.pulsante-registrazione {
+  grid-column: 1 / -1;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #175cd3;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pulsante-registrazione:hover:not(:disabled) {
+  background: #1248a8;
+}
+
+.pulsante-registrazione:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.messaggio-errore {
+  padding: 14px;
+  border-radius: 8px;
+  background: #fef3f2;
+  color: #b42318;
+  font-size: 14px;
+}
+
+.messaggio-successo {
+  padding: 32px;
+  border-radius: 12px;
+  background: #ecfdf3;
+  color: #067647;
+  text-align: center;
+}
+
+.messaggio-successo h2 {
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .pagina-registrazione {
+    padding: 36px 16px 60px;
+  }
+
+  .intestazione h1 {
+    font-size: 27px;
+  }
+
+  .modulo-registrazione {
+    grid-template-columns: 1fr;
+    padding: 22px;
+    gap: 18px;
+  }
+}
