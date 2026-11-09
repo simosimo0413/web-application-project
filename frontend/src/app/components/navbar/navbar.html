@@ -10,8 +10,22 @@
       <span class="nav-placeholder">
         Ciao, {{ utente.nome || utente.email }}
       </span>
+
+      <button
+        type="button"
+        class="pulsante-logout"
+        (click)="esci()"
+        [disabled]="uscitaInCorso()">
+        {{ uscitaInCorso() ? 'Uscita...' : 'Esci' }}
+      </button>
     } @else {
       <a routerLink="/login">Accedi</a>
+    }
+
+    @if (erroreLogout()) {
+      <span class="errore-logout" role="alert">
+        {{ erroreLogout() }}
+      </span>
     }
 
   </nav>

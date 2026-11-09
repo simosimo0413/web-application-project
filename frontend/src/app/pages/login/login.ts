@@ -13,7 +13,7 @@ import { AuthService, LoginRequest } from '../../services/auth';
 })
 export class Login {
 
-  private authService = inject(AuthService);
+  readonly authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
 
   dati: LoginRequest = {
@@ -45,6 +45,7 @@ export class Login {
         this.nomeUtente = risposta.nome;
         this.ruoloUtente = risposta.ruolo;
 
+        this.dati.email = '';
         this.dati.password = '';
 
         this.cdr.markForCheck();

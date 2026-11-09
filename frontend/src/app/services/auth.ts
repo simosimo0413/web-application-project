@@ -88,4 +88,19 @@ export class AuthService {
       })
     );
   }
+
+
+  logout(): Observable<void> {
+    return this.http.get('/api/auth/csrf').pipe(
+      switchMap(() =>
+        this.http.post<void>('/api/auth/logout', {})
+      ),
+      tap(() => {
+        this.utenteSignal.set(null);
+      })
+    );
+  }
+
 }
+
+

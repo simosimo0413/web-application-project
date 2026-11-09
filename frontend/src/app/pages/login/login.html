@@ -11,14 +11,14 @@
       </p>
     </header>
 
-    <div *ngIf="successo" class="messaggio-successo" role="status">
+    <div *ngIf="successo && authService.utenteCorrente()" class="messaggio-successo" role="status">
       <h2>Accesso effettuato!</h2>
       <p>Benvenuto, {{ nomeUtente }}!</p>
       <p>Ruolo: {{ ruoloUtente }}</p>
     </div>
 
     <form
-      *ngIf="!successo"
+      *ngIf="!successo || !authService.utenteCorrente()"
       #modulo="ngForm"
       (ngSubmit)="accedi()"
       class="modulo-login">
