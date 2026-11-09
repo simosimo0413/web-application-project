@@ -1,0 +1,73 @@
+
+<section class="pagina-login">
+
+  <div class="contenitore-login">
+
+    <header class="intestazione">
+      <h1>Accedi al tuo account</h1>
+      <p>
+        Inserisci le tue credenziali per accedere
+        al nostro portale immobiliare.
+      </p>
+    </header>
+
+    <div *ngIf="successo" class="messaggio-successo" role="status">
+      <h2>Accesso effettuato!</h2>
+      <p>Benvenuto, {{ nomeUtente }}!</p>
+      <p>Ruolo: {{ ruoloUtente }}</p>
+    </div>
+
+    <form
+      *ngIf="!successo"
+      #modulo="ngForm"
+      (ngSubmit)="accedi()"
+      class="modulo-login">
+
+      <div class="campo">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="dati.email"
+          required
+          email
+          autocomplete="email"
+          placeholder="esempio@email.it"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          [(ngModel)]="dati.password"
+          required
+          autocomplete="current-password"
+          placeholder="Inserisci la tua password"
+        />
+      </div>
+
+      <div
+        *ngIf="errore"
+        class="messaggio-errore"
+        role="alert">
+        {{ errore }}
+      </div>
+
+      <button
+        type="submit"
+        class="pulsante-login"
+        [disabled]="modulo.invalid || caricamento">
+
+        {{ caricamento ? 'Accesso in corso...' : 'Accedi' }}
+
+      </button>
+
+    </form>
+
+  </div>
+
+</section>

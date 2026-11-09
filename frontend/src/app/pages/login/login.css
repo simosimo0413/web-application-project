@@ -1,0 +1,132 @@
+
+:host {
+  display: block;
+}
+
+.pagina-login {
+  min-height: 75vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 20px;
+  background-color: #f5f7fb;
+}
+
+.contenitore-login {
+  width: 100%;
+  max-width: 480px;
+  padding: 40px;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  box-sizing: border-box;
+}
+
+.intestazione {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.intestazione h1 {
+  margin: 0 0 12px;
+  font-size: 28px;
+  color: #1e293b;
+}
+
+.intestazione p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.modulo-login {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.campo input {
+  width: 100%;
+  padding: 13px 14px;
+  font-size: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.pulsante-login {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pulsante-login:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.pulsante-login:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.messaggio-successo {
+  padding: 20px;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  color: #065f46;
+  text-align: center;
+}
+
+.messaggio-successo h2 {
+  margin-top: 0;
+}
+
+.messaggio-errore {
+  padding: 12px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .pagina-login {
+    padding: 24px 16px;
+  }
+
+  .contenitore-login {
+    padding: 24px;
+  }
+
+  .intestazione h1 {
+    font-size: 24px;
+  }
+}
