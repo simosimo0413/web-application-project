@@ -3,12 +3,12 @@ package it.unical.immobiliare.dao;
 import it.unical.immobiliare.dto.AnnuncioCardDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import it.unical.immobiliare.dto.AnnuncioDettaglioDTO;
+import it.unical.immobiliare.dto.PubblicazioneAnnuncioRequest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import java.util.Optional;
 
@@ -139,5 +139,32 @@ public class AnnuncioDAO {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+    public Long inserisciAnnuncio(
+        Long immobileId,
+        Long venditoreId,
+        PubblicazioneAnnuncioRequest richiesta) {
+
+    String sql = """
+        INSERT INTO annunci (
+            immobile_id,
+            venditore_id,
+            titolo,
+            tipo_contratto,
+            prezzo
+        )
+        VALUES (?, ?, ?, ?, ?)
+        RETURNING id
+        """;
+
+    return jdbcTemplate.queryForObject(
+        sql,
+        Long.class,
+        immobileId,
+        venditoreId,
+        richiesta.titolo(),
+        richiesta.tipoContratto(),
+        richiesta.prezzo()
+        );
     }
 }
