@@ -1,0 +1,195 @@
+
+<section class="pagina-pubblicazione">
+
+  <div class="contenitore-pubblicazione">
+
+    <header class="intestazione">
+      <h1>Pubblica un annuncio immobiliare</h1>
+      <p>
+        Inserisci le caratteristiche del tuo immobile
+        per pubblicarlo sul nostro portale.
+      </p>
+    </header>
+
+    @if (isVenditore) {
+
+      @if (successo) {
+
+        <div class="messaggio-successo" role="status">
+          <h2>Annuncio pubblicato correttamente!</h2>
+          <p>
+            Il tuo annuncio è stato creato con ID:
+            <strong>{{ annuncioId }}</strong>
+          </p>
+        </div>
+
+      } @else {
+
+        <form
+          #modulo="ngForm"
+          (ngSubmit)="pubblica()"
+          class="modulo-pubblicazione">
+
+          <div class="campo">
+            <label for="titolo">Titolo dell'annuncio</label>
+            <input
+              id="titolo"
+              name="titolo"
+              type="text"
+              [(ngModel)]="dati.titolo"
+              required
+              maxlength="150"
+              placeholder="Es. Appartamento con balcone a Cosenza"
+            />
+          </div>
+
+          <div class="campo">
+            <label for="tipoContratto">Tipo di contratto</label>
+            <select
+              id="tipoContratto"
+              name="tipoContratto"
+              [(ngModel)]="dati.tipoContratto"
+              required>
+              <option value="VENDITA">Vendita</option>
+              <option value="AFFITTO">Affitto</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="prezzo">Prezzo in euro</label>
+            <input
+              id="prezzo"
+              name="prezzo"
+              type="number"
+              [(ngModel)]="dati.prezzo"
+              required
+              min="0.01"
+              step="0.01"
+              placeholder="Es. 150000"
+            />
+          </div>
+
+          <div class="campo">
+            <label for="categoriaId">Categoria</label>
+            <select
+              id="categoriaId"
+              name="categoriaId"
+              [(ngModel)]="dati.categoriaId"
+              required>
+              <option [ngValue]="1">
+                Categoria ID 1 (provvisoria)
+              </option>
+            </select>
+            <small>
+              Per il primo test utilizziamo la categoria 1.
+              Successivamente caricheremo le categorie dal database.
+            </small>
+          </div>
+
+          <div class="campo">
+            <label for="superficieMq">Superficie (m²)</label>
+            <input
+              id="superficieMq"
+              name="superficieMq"
+              type="number"
+              [(ngModel)]="dati.superficieMq"
+              required
+              min="0.01"
+              step="0.01"
+              placeholder="Es. 90"
+            />
+          </div>
+
+          <div class="campo">
+            <label for="indirizzo">Indirizzo</label>
+            <input
+              id="indirizzo"
+              name="indirizzo"
+              type="text"
+              [(ngModel)]="dati.indirizzo"
+              required
+              placeholder="Es. Via Roma 25"
+            />
+          </div>
+
+          <div class="campo">
+            <label for="citta">Città</label>
+            <input
+              id="citta"
+              name="citta"
+              type="text"
+              [(ngModel)]="dati.citta"
+              required
+              placeholder="Es. Cosenza"
+            />
+          </div>
+
+          <div class="campo">
+            <label for="provincia">Provincia</label>
+            <input
+              id="provincia"
+              name="provincia"
+              type="text"
+              [(ngModel)]="dati.provincia"
+              maxlength="2"
+              placeholder="Es. CS"
+            />
+          </div>
+
+          <div class="campo">
+            <label for="cap">CAP</label>
+            <input
+              id="cap"
+              name="cap"
+              type="text"
+              [(ngModel)]="dati.cap"
+              maxlength="5"
+              inputmode="numeric"
+              placeholder="Es. 87100"
+            />
+          </div>
+
+          <div class="campo">
+            <label for="descrizione">Descrizione dell'immobile</label>
+            <textarea
+              id="descrizione"
+              name="descrizione"
+              [(ngModel)]="dati.descrizione"
+              required
+              rows="5"
+              placeholder="Descrivi le caratteristiche dell'immobile">
+            </textarea>
+          </div>
+
+          @if (errore) {
+            <div class="messaggio-errore" role="alert">
+              {{ errore }}
+            </div>
+          }
+
+          <button
+            type="submit"
+            class="pulsante-pubblicazione"
+            [disabled]="modulo.invalid || caricamento">
+            {{ caricamento ? 'Pubblicazione in corso...' : 'Pubblica annuncio' }}
+          </button>
+
+        </form>
+
+      }
+
+    } @else {
+
+      <div class="messaggio-avviso" role="alert">
+        <h2>Accesso riservato ai venditori</h2>
+        <p>
+          Per pubblicare un annuncio devi effettuare
+          l'accesso con un account VENDITORE.
+        </p>
+      </div>
+
+    }
+
+  </div>
+
+</section>

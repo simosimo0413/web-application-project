@@ -7,6 +7,11 @@
     <a href="/#annunci">Annunci</a>
 
     @if (authService.utenteCorrente(); as utente) {
+
+      @if (utente.ruolo === 'VENDITORE' || utente.ruolo === 'ROLE_VENDITORE') {
+        <a routerLink="/pubblica-annuncio">Pubblica annuncio</a>
+      }
+
       <span class="nav-placeholder">
         Ciao, {{ utente.nome || utente.email }}
       </span>
