@@ -69,22 +69,38 @@
             />
           </div>
 
-          <div class="campo">
-            <label for="categoriaId">Categoria</label>
-            <select
-              id="categoriaId"
-              name="categoriaId"
-              [(ngModel)]="dati.categoriaId"
-              required>
-              <option [ngValue]="1">
-                Categoria ID 1 (provvisoria)
+          
+        <div class="campo">
+          <label for="categoriaId">Categoria</label>
+
+          <select
+            id="categoriaId"
+            name="categoriaId"
+            [(ngModel)]="dati.categoriaId"
+            [disabled]="caricamentoCategorie || !!erroreCategorie"
+            required>
+
+            <option [ngValue]="0" disabled>
+              Seleziona una categoria
+            </option>
+
+            @for (categoria of categorie; track categoria.id) {
+              <option [ngValue]="categoria.id">
+                {{ categoria.nome }}
               </option>
-            </select>
-            <small>
-              Per il primo test utilizziamo la categoria 1.
-              Successivamente caricheremo le categorie dal database.
-            </small>
-          </div>
+            }
+
+          </select>
+
+          @if (caricamentoCategorie) {
+            <small>Caricamento delle categorie...</small>
+          }
+
+          @if (erroreCategorie) {
+            <small>{{ erroreCategorie }}</small>
+          }
+        </div>
+
 
           <div class="campo">
             <label for="superficieMq">Superficie (m²)</label>
@@ -167,12 +183,14 @@
             </div>
           }
 
+          
           <button
             type="submit"
             class="pulsante-pubblicazione"
-            [disabled]="modulo.invalid || caricamento">
+            [disabled]="modulo.invalid || caricamento || caricamentoCategorie || !!erroreCategorie || dati.categoriaId === 0">
             {{ caricamento ? 'Pubblicazione in corso...' : 'Pubblica annuncio' }}
           </button>
+
 
         </form>
 

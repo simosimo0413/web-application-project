@@ -1,13 +1,25 @@
 
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { AuthService } from '../../services/auth';
+
 import {
   PubblicazioneAnnuncioService,
   PubblicazioneAnnuncioRequest
 } from '../../services/pubblicazione-annuncio';
+
+import {
+  CategorieService,
+  Categoria
+} from '../../services/categorie';
 
 @Component({
   selector: 'app-pubblica-annuncio',
@@ -16,18 +28,23 @@ import {
   templateUrl: './pubblica-annuncio.html',
   styleUrl: './pubblica-annuncio.css'
 })
-export class PubblicaAnnuncio {
+export class PubblicaAnnuncio implements OnInit {
 
   readonly authService = inject(AuthService);
 
   private pubblicazioneService = inject(PubblicazioneAnnuncioService);
+  private categorieService = inject(CategorieService);
   private cdr = inject(ChangeDetectorRef);
+
+  categorie: Categoria[] = [];
+  caricamentoCategorie = true;
+  erroreCategorie = '';
 
   dati: PubblicazioneAnnuncioRequest = {
     titolo: '',
     tipoContratto: 'VENDITA',
     prezzo: 0,
-    categoriaId: 1,
+    categoriaId: 0,
     superficieMq: 0,
     indirizzo: '',
     citta: '',
@@ -42,10 +59,32 @@ export class PubblicaAnnuncio {
   annuncioId: number | null = null;
 
   get isVenditore(): boolean {
-  const ruolo = this.authService.utenteCorrente()?.ruolo;
+    const ruolo = this.authService.utenteCorrente()?.ruolo;
 
-  return ruolo?.replace(/^ROLE_/, '') === 'VENDITORE';
-}
+    return ruolo?.replace(/^ROLE_/, '') === 'VENDITORE';
+  }
+
+  ngOnInit(): void {
+    this.categorieService.recuperaCategorie().subscribe({
+      next: (risposta) => {
+        this.categorie = risposta;
+        this.caricamentoCategorie = false;
+
+        if (risposta.length === 0) {
+          this.erroreCategorie = 'Nessuna categoria disponibile.';
+        }
+
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.caricamentoCategorie = false;
+        this.erroreCategorie =
+          'Impossibile caricare le categorie immobiliari.';
+
+        this.cdr.markForCheck();
+      }
+    });
+  }
 
   pubblica(): void {
 
@@ -55,6 +94,11 @@ export class PubblicaAnnuncio {
 
     if (!this.isVenditore) {
       this.errore = 'Solo i venditori possono pubblicare annunci.';
+      return;
+    }
+
+    if (!this.categorie.some(c => c.id === this.dati.categoriaId)) {
+      this.errore = 'Seleziona una categoria valida.';
       return;
     }
 
