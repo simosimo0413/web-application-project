@@ -1,0 +1,8 @@
+package it.unical.immobiliare.dto;
+
+public record CategoriaResponse(
+    Long id,
+    String nome,
+    String descrizione
+) {
+}

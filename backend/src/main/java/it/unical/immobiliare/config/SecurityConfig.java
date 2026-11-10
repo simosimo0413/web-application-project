@@ -25,6 +25,7 @@ public class SecurityConfig {
                     .permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/registrazione", "/api/auth/login")
                     .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/categorie").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form.disable())
