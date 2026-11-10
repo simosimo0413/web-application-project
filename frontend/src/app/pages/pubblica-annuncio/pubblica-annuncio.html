@@ -208,6 +208,74 @@
 
     }
 
+@if (annuncioId !== null) {
+  <section class="sezione-caricamento-foto">
+    <h2>Aggiungi fotografie all'annuncio</h2>
+
+    <p>
+      L'annuncio è stato pubblicato.
+      Ora puoi aggiungere una o più fotografie dell'immobile.
+    </p>
+
+    <div class="campo-foto">
+      <label for="foto-immobile">Seleziona una fotografia</label>
+
+      <input
+        id="foto-immobile"
+        type="file"
+        accept=".jpg,.jpeg,.png,.webp"
+        (change)="selezionaFoto($event)"
+      />
+    </div>
+
+    <div class="campo-foto">
+      <label for="descrizione-foto">
+        Descrizione della fotografia (facoltativa)
+      </label>
+
+      <input
+        id="descrizione-foto"
+        type="text"
+        #campoDescrizione
+        [value]="descrizioneFoto"
+        (input)="descrizioneFoto = campoDescrizione.value"
+        placeholder="Es. Soggiorno principale"
+      />
+    </div>
+
+    @if (fotoSelezionata) {
+      <p>File selezionato: {{ fotoSelezionata.name }}</p>
+    }
+
+    <button
+      type="button"
+      (click)="caricaFoto()"
+      [disabled]="!fotoSelezionata || caricamentoFoto"
+    >
+      {{ caricamentoFoto ? 'Caricamento in corso...' : 'Carica fotografia' }}
+    </button>
+
+    @if (erroreFoto) {
+      <p class="errore-foto">{{ erroreFoto }}</p>
+    }
+
+    @if (fotoCaricate.length > 0) {
+      <h3>Fotografie caricate</h3>
+
+      <div class="anteprima-foto">
+        @for (fotografia of fotoCaricate; track fotografia.id) {
+          <img
+            [src]="fotografia.url"
+            [alt]="fotografia.descrizione || 'Fotografia immobile'"
+            width="180"
+            loading="lazy"
+          />
+        }
+      </div>
+    }
+    </section>
+}
+
   </div>
 
 </section>

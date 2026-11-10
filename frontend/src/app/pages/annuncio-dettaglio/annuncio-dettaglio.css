@@ -176,3 +176,44 @@
     padding: 20px;
   }
 }
+
+
+/* Galleria delle fotografie aggiuntive */
+
+.galleria-fotografie {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+  margin-bottom: 32px;
+}
+
+.galleria-fotografie img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  display: block;
+}
+
+/* Adattamento per tablet */
+
+@media (max-width: 768px) {
+  .galleria-fotografie {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Adattamento per smartphone */
+
+@media (max-width: 480px) {
+  .galleria-fotografie {
+    grid-template-columns: 1fr;
+  }
+
+  .galleria-fotografie img {
+    height: 220px;
+  }
+}
+

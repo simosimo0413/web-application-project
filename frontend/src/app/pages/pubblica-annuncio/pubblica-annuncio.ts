@@ -6,6 +6,8 @@ import {
   inject
 } from '@angular/core';
 
+import { FotoService, Foto } from '../../services/foto';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -35,6 +37,17 @@ export class PubblicaAnnuncio implements OnInit {
   private pubblicazioneService = inject(PubblicazioneAnnuncioService);
   private categorieService = inject(CategorieService);
   private cdr = inject(ChangeDetectorRef);
+
+private fotoService = inject(FotoService);
+
+fotoSelezionata: File | null = null;
+descrizioneFoto = '';
+
+fotoCaricate: Foto[] = [];
+
+caricamentoFoto = false;
+erroreFoto = '';
+
 
   categorie: Categoria[] = [];
   caricamentoCategorie = true;
@@ -131,4 +144,72 @@ export class PubblicaAnnuncio implements OnInit {
       }
     });
   }
+
+
+selezionaFoto(evento: Event): void {
+  const input = evento.target as HTMLInputElement;
+
+  this.fotoSelezionata = input.files?.[0] ?? null;
+  input.value = '';
+
+  this.erroreFoto = '';
+
+  if (
+    this.fotoSelezionata &&
+    this.fotoSelezionata.size > 5 * 1024 * 1024
+  ) {
+    this.fotoSelezionata = null;
+    this.erroreFoto = 'La fotografia non può superare 5 MB.';
+  }
+}
+
+caricaFoto(): void {
+
+  if (
+    this.annuncioId === null ||
+    this.fotoSelezionata === null ||
+    this.caricamentoFoto
+  ) {
+    return;
+  }
+
+  this.caricamentoFoto = true;
+  this.erroreFoto = '';
+
+  this.fotoService.caricaFoto(
+    this.annuncioId,
+    this.fotoSelezionata,
+    this.descrizioneFoto
+  ).subscribe({
+    next: (fotografia) => {
+      this.fotoCaricate.push(fotografia);
+
+      this.fotoSelezionata = null;
+      this.descrizioneFoto = '';
+      this.caricamentoFoto = false;
+
+      this.cdr.markForCheck();
+    },
+    error: (err) => {
+      this.caricamentoFoto = false;
+
+      if (err.status === 400 || err.status === 413) {
+        this.erroreFoto =
+          'Fotografia non valida. Usa JPG, PNG o WEBP fino a 5 MB.';
+      } else if (err.status === 401 ||
+                 err.status === 403 ||
+                 err.status === 404) {
+        this.erroreFoto =
+          'Non sei autorizzato a caricare foto su questo annuncio.';
+      } else {
+        this.erroreFoto =
+          'Errore durante il caricamento della fotografia.';
+      }
+
+      this.cdr.markForCheck();
+    }
+  });
+}
+
+
 }
