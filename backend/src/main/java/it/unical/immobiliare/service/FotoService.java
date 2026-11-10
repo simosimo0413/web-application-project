@@ -10,11 +10,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 @Service
 public class FotoService {
+    private static final Logger logger =
+        LoggerFactory.getLogger(FotoService.class);
 
     private final AnnuncioDAO annuncioDAO;
     private final FotoDAO fotoDAO;
@@ -105,5 +112,60 @@ public class FotoService {
     }
     public List<FotoResponse> recuperaFotoAnnuncio(Long annuncioId) {
         return fotoDAO.trovaPerAnnuncio(annuncioId);
+    }
+    @Transactional
+    public void eliminaFoto(
+            Long annuncioId,
+            Long fotoId,
+            Authentication authentication) {
+
+        // 1. Verifica che il venditore sia proprietario dell'annuncio.
+        verificaProprietario(annuncioId, authentication);
+
+        // 2. Cerca la fotografia associata all'annuncio.
+        FotoResponse fotografia = fotoDAO
+            .trovaPerAnnuncioEId(annuncioId, fotoId)
+            .orElseThrow(() ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Fotografia non trovata"
+                )
+            );
+
+        // 3. Elimina il record dal database.
+        boolean eliminata = fotoDAO.eliminaPerAnnuncioEId(
+            annuncioId,
+            fotoId
+        );
+
+        if (!eliminata) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Fotografia non trovata"
+            );
+        }
+
+        // 4. Se necessario, assegna una nuova foto principale.
+        fotoDAO.assegnaPrincipaleSeAssente(annuncioId);
+
+        // 5. Elimina il file fisico solo dopo il commit del database.
+        TransactionSynchronizationManager.registerSynchronization(
+            new TransactionSynchronization() {
+
+                @Override
+                public void afterCommit() {
+                    try {
+                        fotoStorageService.elimina(fotografia.url());
+                    } catch (RuntimeException errore) {
+                        logger.error(
+                            "Impossibile eliminare il file della foto {}: {}",
+                            fotografia.id(),
+                            fotografia.url(),
+                            errore
+                        );
+                    }
+                }
+            }
+        );
     }
 }
