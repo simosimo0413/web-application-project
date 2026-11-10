@@ -10,6 +10,7 @@ import java.util.List;
 import it.unical.immobiliare.dto.AnnuncioDettaglioDTO;
 import it.unical.immobiliare.dto.PubblicazioneAnnuncioRequest;
 import org.springframework.dao.EmptyResultDataAccessException;
+
 import java.util.Optional;
 
 @Repository
@@ -167,4 +168,23 @@ public class AnnuncioDAO {
         richiesta.prezzo()
         );
     }
+    public Optional<Long> trovaImmobileIdSeProprietario(
+        Long annuncioId,
+        String emailVenditore) {
+
+    String sql = """
+        SELECT a.immobile_id
+        FROM annunci a
+        JOIN utenti u ON a.venditore_id = u.id
+        WHERE a.id = ?
+        AND u.email = ?
+        """;
+
+    return jdbcTemplate.query(
+        sql,
+        (rs, rowNum) -> rs.getLong("immobile_id"),
+        annuncioId,
+        emailVenditore
+    ).stream().findFirst();
+}
 }
