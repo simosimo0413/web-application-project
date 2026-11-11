@@ -14,6 +14,8 @@ import { ContattoService } from '../../services/contatto';
 import { AnnuncioDettaglio as AnnuncioDettaglioModel } from '../../models/annuncio-dettaglio';
 import { AnnuncioService } from '../../services/annuncio';
 
+import { Recensione } from '../../models/recensione';
+import { RecensioneService } from '../../services/recensione';
 import { FotoService, Foto } from '../../services/foto';
 
 @Component({
@@ -25,6 +27,7 @@ import { FotoService, Foto } from '../../services/foto';
 })
 export class AnnuncioDettaglio implements OnInit {
   private contattoService = inject(ContattoService);
+  private recensioneService = inject(RecensioneService);
 
 oggettoContatto = '';
 messaggioContatto = '';
@@ -46,6 +49,9 @@ erroreContatto = '';
   foto: Foto[] = [];
   caricamentoFoto = false;
   erroreFoto = false;
+  recensioni: Recensione[] = [];
+  caricamentoRecensioni = false;
+  erroreRecensioni = false;
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -62,8 +68,9 @@ erroreContatto = '';
         this.caricamento = false;
 
         this.caricaFoto(id);
-
+        this.caricaRecensioni(id);
         this.cdr.markForCheck();
+
       },
       error: (err) => {
         console.error('Errore caricamento dettaglio:', err);
@@ -94,6 +101,33 @@ erroreContatto = '';
         this.cdr.markForCheck();
       }
     });
+  }
+
+  private caricaRecensioni(annuncioId: number): void {
+    this.caricamentoRecensioni = true;
+    this.erroreRecensioni = false;
+
+    this.recensioneService
+      .recuperaRecensioniAnnuncio(annuncioId)
+      .subscribe({
+        next: (risposta) => {
+          this.recensioni = risposta;
+          this.caricamentoRecensioni = false;
+
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error(
+            'Errore caricamento recensioni:',
+            err
+          );
+
+          this.erroreRecensioni = true;
+          this.caricamentoRecensioni = false;
+
+          this.cdr.markForCheck();
+        }
+      });
   }
 
 inviaContatto(): void {

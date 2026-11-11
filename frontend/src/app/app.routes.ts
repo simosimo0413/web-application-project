@@ -17,6 +17,13 @@ export const routes: Routes = [
       .then(m => m.VisiteRicevute)
 },
 
+{
+  path: 'visite-mie',
+  loadComponent: () =>
+    import('./pages/visite-mie/visite-mie')
+      .then(m => m.VisiteMie)
+},
+
 
 {
   path: 'messaggi-ricevuti',

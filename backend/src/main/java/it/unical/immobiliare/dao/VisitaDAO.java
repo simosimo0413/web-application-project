@@ -150,5 +150,59 @@ public class VisitaDAO {
 
     return righeAggiornate == 1;
 }
+    public record VisitaAcquirente(
+        Long id,
+        Long annuncioId,
+        String titoloAnnuncio,
+        Instant dataVisita,
+        boolean confermata,
+        boolean recensita,
+        boolean recensibile
+    ) {
+    }
+    public List<VisitaAcquirente> trovaVisiteAcquirente(
+        String emailAcquirente) {
+
+    String sql = """
+        SELECT
+            vi.id,
+            vi.annuncio_id,
+            a.titolo AS titolo_annuncio,
+            vi.data_visita,
+            vi.confermata,
+            (r.id IS NOT NULL) AS recensita,
+            (
+                vi.confermata = TRUE
+                AND vi.data_visita < CURRENT_TIMESTAMP
+                AND r.id IS NULL
+            ) AS recensibile
+        FROM visite vi
+        JOIN annunci a
+            ON a.id = vi.annuncio_id
+        JOIN utenti acq
+            ON acq.id = vi.acquirente_id
+        LEFT JOIN recensioni r
+            ON r.visita_id = vi.id
+        WHERE acq.email = ?
+        ORDER BY vi.data_visita DESC, vi.id DESC
+        """;
+
+    return jdbcTemplate.query(
+        sql,
+        (rs, rowNum) -> new VisitaAcquirente(
+            rs.getLong("id"),
+            rs.getLong("annuncio_id"),
+            rs.getString("titolo_annuncio"),
+            rs.getObject(
+                "data_visita",
+                OffsetDateTime.class
+            ).toInstant(),
+            rs.getBoolean("confermata"),
+            rs.getBoolean("recensita"),
+            rs.getBoolean("recensibile")
+        ),
+        emailAcquirente
+    );
+}
 
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import it.unical.immobiliare.dao.VisitaDAO.VisitaRicevuta;
+import it.unical.immobiliare.dao.VisitaDAO.VisitaAcquirente;
 import java.util.List;
 
 import java.time.Instant;
@@ -190,5 +191,38 @@ public class VisitaService {
         );
     }
 }
+    public List<VisitaAcquirente> recuperaVisiteAcquirente(
+            Authentication authentication) {
+
+        // 1. Verifica che l'utente sia autenticato.
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getName())) {
+
+            throw new AccessDeniedException(
+                "Devi effettuare il login"
+            );
+        }
+
+        // 2. Verifica che l'utente sia un acquirente.
+        boolean acquirente = authentication.getAuthorities()
+            .stream()
+            .anyMatch(autorita ->
+                "ROLE_ACQUIRENTE".equals(
+                    autorita.getAuthority()
+                )
+            );
+
+        if (!acquirente) {
+            throw new AccessDeniedException(
+                "Solo gli acquirenti possono visualizzare le proprie visite"
+            );
+        }
+
+        // 3. Recupera soltanto le visite dell'utente autenticato.
+        return visitaDAO.trovaVisiteAcquirente(
+            authentication.getName()
+        );
+    }
 
 }

@@ -1,0 +1,305 @@
+/* Pagina delle visite dell'acquirente */
+
+.pagina-visite-mie {
+    min-height: 70vh;
+    background-color: #f7f9fc;
+    padding: 48px 24px 80px;
+  }
+
+  .contenitore-visite-mie {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .intestazione-visite-mie {
+    margin-bottom: 32px;
+  }
+
+  .intestazione-visite-mie h1 {
+    margin: 0 0 12px;
+    color: #1d2939;
+    font-size: 32px;
+  }
+
+  .intestazione-visite-mie p {
+    color: #667085;
+    line-height: 1.6;
+  }
+
+  /* Messaggi di caricamento, errore e lista vuota */
+
+  .messaggio-visite {
+    padding: 28px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    color: #475467;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  .messaggio-visite a {
+    color: #175cd3;
+    font-weight: 600;
+  }
+
+  .errore-visite {
+    color: #b91c1c;
+    background-color: #fef2f2;
+  }
+
+  /* Elenco delle visite */
+
+  .elenco-visite-mie {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .scheda-visita-mia {
+    padding: 26px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  .scheda-visita-mia h2 {
+    margin: 0 0 20px;
+    color: #1d2939;
+    font-size: 21px;
+  }
+
+  .scheda-visita-mia p {
+    color: #475467;
+    line-height: 1.6;
+    margin: 0 0 14px;
+  }
+
+  .scheda-visita-mia strong {
+    color: #344054;
+  }
+
+  /* Stato della recensione */
+
+  .stato-recensione {
+    margin: 22px 0;
+  }
+
+  .etichetta-stato {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .scheda-visita-mia .gia-recensita {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .scheda-visita-mia .recensione-disponibile {
+    background-color: #f0fdf4;
+    color: #166534;
+  }
+
+  .scheda-visita-mia .recensione-non-disponibile {
+    background-color: #f1f5f9;
+    color: #475569;
+  }
+
+  /* Collegamento all'immobile */
+
+  .link-annuncio-visita {
+    display: inline-block;
+    color: #175cd3;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .link-annuncio-visita:hover {
+    text-decoration: underline;
+  }
+
+  /* Adattamento per smartphone e tablet */
+
+  @media (max-width: 768px) {
+    .pagina-visite-mie {
+      padding: 28px 16px 56px;
+    }
+
+    .intestazione-visite-mie h1 {
+      font-size: 27px;
+    }
+
+    .elenco-visite-mie {
+      grid-template-columns: 1fr;
+    }
+
+    .scheda-visita-mia {
+      padding: 20px;
+    }
+  }
+
+  /* Messaggio dopo la pubblicazione */
+
+.messaggio-successo-recensione {
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border-radius: 10px;
+    background-color: #f0fdf4;
+    color: #166534;
+    font-weight: 600;
+  }
+
+  /* Pulsante per aprire il modulo */
+
+  .pulsante-apri-recensione {
+    display: block;
+    padding: 11px 18px;
+    margin-bottom: 20px;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .pulsante-apri-recensione:hover:not(:disabled) {
+    background-color: #1d4ed8;
+  }
+
+  /* Modulo di pubblicazione */
+
+  .modulo-recensione {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+    margin-bottom: 22px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+  }
+
+  .modulo-recensione h3 {
+    margin: 0;
+    color: #1d2939;
+    font-size: 19px;
+  }
+
+  .modulo-recensione label {
+    color: #344054;
+    font-weight: 600;
+  }
+
+  .modulo-recensione textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font: inherit;
+    resize: vertical;
+  }
+
+  .modulo-recensione textarea:focus {
+    outline: 2px solid #93c5fd;
+    border-color: #2563eb;
+  }
+
+  /* Selezione delle stelle */
+
+  .selezione-stelle {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pulsante-stella {
+    padding: 2px 5px;
+    border: none;
+    background: transparent;
+    color: #d97706;
+    font-size: 30px;
+    cursor: pointer;
+  }
+
+  .pulsante-stella:hover:not(:disabled) {
+    transform: scale(1.1);
+  }
+
+  .voto-selezionato {
+    margin: 0;
+    font-size: 14px;
+    color: #475467;
+  }
+
+  /* Pulsanti di pubblicazione e annullamento */
+
+  .azioni-recensione {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .pulsante-pubblica-recensione,
+  .pulsante-annulla-recensione {
+    padding: 11px 18px;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .pulsante-pubblica-recensione {
+    border: none;
+    background-color: #2563eb;
+    color: #ffffff;
+  }
+
+  .pulsante-pubblica-recensione:hover:not(:disabled) {
+    background-color: #1d4ed8;
+  }
+
+  .pulsante-annulla-recensione {
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
+    color: #344054;
+  }
+
+  .pulsante-apri-recensione:disabled,
+  .pulsante-stella:disabled,
+  .pulsante-pubblica-recensione:disabled,
+  .pulsante-annulla-recensione:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  /* Errori di pubblicazione */
+
+  .errore-pubblicazione-recensione {
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #fef2f2;
+    color: #b91c1c;
+  }
+
+  /* Adattamento agli smartphone */
+
+  @media (max-width: 600px) {
+    .modulo-recensione {
+      padding: 16px;
+    }
+
+    .azioni-recensione {
+      flex-direction: column;
+    }
+
+    .pulsante-pubblica-recensione,
+    .pulsante-annulla-recensione {
+      width: 100%;
+    }

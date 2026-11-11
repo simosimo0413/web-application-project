@@ -155,6 +155,72 @@
         </aside>
 
       </div>
+            <!-- Recensioni dell'immobile -->
+      <section class="sezione-recensioni">
+
+        <h2>Recensioni dell'immobile</h2>
+
+        @if (caricamentoRecensioni) {
+
+          <p role="status">
+            Caricamento recensioni...
+          </p>
+
+        } @else if (erroreRecensioni) {
+
+          <p role="alert">
+            Non è stato possibile caricare le recensioni.
+          </p>
+
+        } @else if (recensioni.length === 0) {
+
+          <p>
+            Questo immobile non ha ancora recensioni.
+          </p>
+
+        } @else {
+
+          <div class="elenco-recensioni">
+
+            @for (recensione of recensioni; track recensione.id) {
+
+              <article class="scheda-recensione">
+
+                <div class="valutazione-recensione">
+
+                  <span
+                    class="stelle-recensione"
+                    aria-hidden="true"
+                  >
+                    @for (stella of [1, 2, 3, 4, 5]; track stella) {
+                      {{ stella <= recensione.voto ? '★' : '☆' }}
+                    }
+                  </span>
+
+                  <strong>
+                    {{ recensione.voto }}/5
+                  </strong>
+
+                </div>
+
+                <p class="testo-recensione">
+                  {{ recensione.commento }}
+                </p>
+
+                <p class="data-recensione">
+                  Pubblicata il
+                  {{ recensione.dataRecensione | date:'dd/MM/yyyy' }}
+                </p>
+
+              </article>
+
+            }
+
+          </div>
+
+        }
+
+      </section>
 
       <!-- NUOVA SEZIONE: Contatta il venditore -->
 

@@ -1,0 +1,219 @@
+<section class="pagina-visite-mie">
+
+    <div class="contenitore-visite-mie">
+
+      <header class="intestazione-visite-mie">
+        <h1>Le mie visite</h1>
+        <p>
+          Consulta le visite richieste e verifica
+          quali immobili puoi recensire.
+        </p>
+      </header>
+
+      @if (caricamento) {
+
+        <p class="messaggio-visite" role="status">
+          Caricamento delle tue visite...
+        </p>
+
+      } @else if (errore) {
+
+        <p class="messaggio-visite errore-visite" role="alert">
+          {{ errore }}
+        </p>
+
+      } @else if (visite.length === 0) {
+
+        <div class="messaggio-visite">
+          <p>Non hai ancora richiesto nessuna visita.</p>
+
+          <a routerLink="/annunci">
+            Esplora gli immobili
+          </a>
+        </div>
+
+      } @else {
+
+        @if (successoRecensione) {
+
+            <p class="messaggio-successo-recensione" role="status">
+              {{ successoRecensione }}
+            </p>
+        }
+
+        <div class="elenco-visite-mie">
+
+          @for (visita of visite; track visita.id) {
+
+            <article class="scheda-visita-mia">
+
+              <h2>{{ visita.titoloAnnuncio }}</h2>
+
+              <p>
+                <strong>Data della visita:</strong>
+                {{ visita.dataVisita | date:'dd/MM/yyyy HH:mm' }}
+              </p>
+
+              <p>
+                <strong>Conferma del venditore:</strong>
+
+                @if (visita.confermata) {
+                  <span>Confermata</span>
+                } @else {
+                  <span>Da confermare</span>
+                }
+              </p>
+
+              <div class="stato-recensione">
+
+                @if (visita.recensita) {
+
+                  <p class="etichetta-stato gia-recensita">
+                    GiÃ recensita
+                  </p>
+
+                } @else if (visita.recensibile) {
+
+                  <p class="etichetta-stato recensione-disponibile">
+                    Puoi recensire questa visita
+                  </p>
+
+                } @else {
+
+                  <p class="etichetta-stato recensione-non-disponibile">
+                    Recensione non ancora disponibile
+                  </p>
+
+                }
+
+              </div>
+
+            <!-- Pulsante disponibile soltanto per visite recensibili -->
+        @if (visita.recensibile && visitaSelezionataId !== visita.id) {
+
+            <button
+            type="button"
+            class="pulsante-apri-recensione"
+            (click)="apriModuloRecensione(visita)"
+            [disabled]="invioRecensioneInCorso"
+            >
+            Scrivi recensione
+            </button>
+
+        }
+
+        <!-- Modulo della visita selezionata -->
+        @if (visitaSelezionataId === visita.id) {
+
+            <form
+            class="modulo-recensione"
+            #moduloRecensione="ngForm"
+            (ngSubmit)="inviaRecensione()"
+            >
+
+            <h3>Scrivi la tua recensione</h3>
+
+            <p>Seleziona un voto da 1 a 5 stelle.</p>
+
+            <div
+                class="selezione-stelle"
+                role="group"
+                aria-label="Valutazione della visita"
+            >
+
+                @for (stella of [1, 2, 3, 4, 5]; track stella) {
+
+                <button
+                    type="button"
+                    class="pulsante-stella"
+                    [class.selezionata]="stella <= votoRecensione"
+                    [attr.aria-label]="stella + (stella === 1 ? ' stella' : ' stelle')"
+                    [attr.aria-pressed]="votoRecensione === stella"
+                    [disabled]="invioRecensioneInCorso"
+                    (click)="votoRecensione = stella"
+                >
+                    {{ stella <= votoRecensione ? '★' : '☆' }}
+                </button>
+
+                }
+
+            </div>
+
+            <p class="voto-selezionato">
+                Voto selezionato: {{ votoRecensione }}/5
+            </p>
+
+            <label for="commento-recensione-{{ visita.id }}">
+                Commento
+            </label>
+
+            <textarea
+                id="commento-recensione-{{ visita.id }}"
+                name="commentoRecensione"
+                [(ngModel)]="commentoRecensione"
+                maxlength="5000"
+                rows="5"
+                required
+                [disabled]="invioRecensioneInCorso"
+                placeholder="Racconta la tua esperienza durante la visita..."
+            ></textarea>
+
+            @if (erroreRecensione) {
+
+                <p class="errore-pubblicazione-recensione" role="alert">
+                {{ erroreRecensione }}
+                </p>
+
+            }
+
+            <div class="azioni-recensione">
+
+                <button
+                type="submit"
+                class="pulsante-pubblica-recensione"
+                [disabled]="
+                    invioRecensioneInCorso ||
+                    votoRecensione < 1 ||
+                    moduloRecensione.invalid
+                "
+                >
+                {{
+                    invioRecensioneInCorso
+                    ? 'Pubblicazione in corso...'
+                    : 'Pubblica recensione'
+                }}
+                </button>
+
+                <button
+                type="button"
+                class="pulsante-annulla-recensione"
+                [disabled]="invioRecensioneInCorso"
+                (click)="chiudiModuloRecensione()"
+                >
+                Annulla
+                </button>
+
+            </div>
+
+            </form>
+
+        }
+
+              <a
+                class="link-annuncio-visita"
+                [routerLink]="['/annunci', visita.annuncioId]"
+              >
+                Visualizza immobile
+              </a>
+
+            </article>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  </section>

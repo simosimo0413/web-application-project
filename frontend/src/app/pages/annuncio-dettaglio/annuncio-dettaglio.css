@@ -323,4 +323,88 @@
   }
 }
 
+/* Sezione recensioni dell'immobile */
+
+.sezione-recensioni {
+  margin-top: 36px;
+  margin-bottom: 36px;
+  padding: 28px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.sezione-recensioni h2 {
+  margin: 0 0 24px;
+  color: #1e293b;
+  font-size: 1.5rem;
+}
+
+.sezione-recensioni > p {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.elenco-recensioni {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.scheda-recensione {
+  padding: 20px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.valutazione-recensione {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.stelle-recensione {
+  color: #d97706;
+  font-size: 24px;
+  letter-spacing: 2px;
+}
+
+.valutazione-recensione strong {
+  color: #334155;
+  font-size: 15px;
+}
+
+.testo-recensione {
+  color: #475467;
+  line-height: 1.7;
+  margin: 0 0 14px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.data-recensione {
+  color: #667085;
+  font-size: 13px;
+  margin: 0;
+}
+
+  /* Adattamento delle recensioni agli smartphone */
+
+@media (max-width: 600px) {
+  .sezione-recensioni {
+    padding: 18px;
+  }
+
+  .scheda-recensione {
+    padding: 16px;
+  }
+
+  .stelle-recensione {
+    font-size: 21px;
+  }
+}
+
 

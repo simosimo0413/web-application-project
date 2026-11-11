@@ -29,6 +29,8 @@ public class SecurityConfig {
                     .permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/foto/file/**")
                     .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/recensioni/annunci/**")
+                .permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form.disable())

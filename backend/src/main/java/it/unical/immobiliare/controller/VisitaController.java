@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import it.unical.immobiliare.dao.VisitaDAO.VisitaRicevuta;
+import it.unical.immobiliare.dao.VisitaDAO.VisitaAcquirente;
 import java.util.List;
 
 import java.util.Map;
@@ -47,7 +48,7 @@ public class VisitaController {
 
         return ResponseEntity.ok(visite);
     }
-    
+
     @PatchMapping("/{visitaId}/conferma")
     public ResponseEntity<Void> confermaVisita(
             @PathVariable Long visitaId,
@@ -59,5 +60,14 @@ public class VisitaController {
         );
 
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/mie")
+    public ResponseEntity<List<VisitaAcquirente>> recuperaVisiteAcquirente(
+            Authentication authentication) {
+
+        List<VisitaAcquirente> visite =
+            visitaService.recuperaVisiteAcquirente(authentication);
+
+        return ResponseEntity.ok(visite);
     }
 }
