@@ -4,8 +4,7 @@
 
   <nav>
     <a routerLink="/">Home</a>
-    <a href="/#annunci">Annunci</a>
-
+    <a href="/annunci">Annunci</a>
     @if (authService.utenteCorrente(); as utente) {
 
       @if (utente.ruolo === 'VENDITORE' || utente.ruolo === 'ROLE_VENDITORE') {
