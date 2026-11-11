@@ -6,6 +6,7 @@ import {
   inject
 } from '@angular/core';
 
+import { PrenotaVisita } from '../../components/prenota-visita/prenota-visita';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +19,7 @@ import { FotoService, Foto } from '../../services/foto';
 @Component({
   selector: 'app-annuncio-dettaglio',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule,PrenotaVisita],
   templateUrl: './annuncio-dettaglio.html',
   styleUrl: './annuncio-dettaglio.css'
 })
