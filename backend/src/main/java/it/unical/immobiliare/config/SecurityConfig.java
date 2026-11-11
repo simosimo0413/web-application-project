@@ -30,8 +30,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/foto/file/**")
                     .permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/recensioni/annunci/**")
-                .permitAll()
+                    .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/aste/annunci/**")
+                    .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/offerte/aste/*/riepilogo")
+                    .permitAll()
                 .anyRequest().authenticated()
+
+
             )
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())

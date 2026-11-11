@@ -325,6 +325,7 @@
 
 /* Sezione recensioni dell'immobile */
 
+.sezione-asta,
 .sezione-recensioni {
   margin-top: 36px;
   margin-bottom: 36px;
@@ -334,12 +335,14 @@
   border-radius: 12px;
 }
 
+.sezione-asta h2,
 .sezione-recensioni h2 {
   margin: 0 0 24px;
   color: #1e293b;
   font-size: 1.5rem;
 }
 
+.sezione-asta > p,
 .sezione-recensioni > p {
   color: #64748b;
   line-height: 1.6;
@@ -394,9 +397,10 @@
   /* Adattamento delle recensioni agli smartphone */
 
 @media (max-width: 600px) {
+  .sezione-asta,
   .sezione-recensioni {
     padding: 18px;
-  }
+}
 
   .scheda-recensione {
     padding: 16px;

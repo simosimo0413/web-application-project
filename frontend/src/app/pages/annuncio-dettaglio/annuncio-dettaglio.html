@@ -155,7 +155,169 @@
         </aside>
 
       </div>
-            <!-- Recensioni dell'immobile -->
+
+      <!-- Asta associata all'immobile -->
+      @if (caricamentoAsta) {
+
+        <p class="messaggio" role="status">
+          Caricamento informazioni sull'asta...
+        </p>
+
+      } @else if (erroreAsta) {
+
+        <p class="messaggio" role="alert">
+          Non è stato possibile caricare le informazioni sull'asta.
+        </p>
+
+      } @else if (asta) {
+
+        <section class="sezione-asta">
+
+          <h2>Asta immobiliare</h2>
+
+          <p>
+            <strong>Stato:</strong>
+
+            @switch (asta.stato) {
+              @case ('PROGRAMMATA') {
+                Programmata
+              }
+              @case ('IN_CORSO') {
+                In corso
+              }
+              @case ('TERMINATA') {
+                Terminata
+              }
+            }
+          </p>
+
+          <p>
+            <strong>Prezzo base:</strong>
+            {{ asta.prezzoBase | currency:'EUR':'symbol':'1.2-2':'it' }}
+          </p>
+
+          <p>
+            <strong>Inizio:</strong>
+            {{ asta.inizio | date:'dd/MM/yyyy HH:mm' }}
+          </p>
+
+          <p>
+            <strong>Scadenza:</strong>
+            {{ asta.fine | date:'dd/MM/yyyy HH:mm' }}
+          </p>
+
+          @if (caricamentoRiepilogo) {
+
+            <p role="status">
+              Caricamento delle offerte...
+            </p>
+
+          } @else if (erroreRiepilogo) {
+
+            <p role="alert">
+              Non è stato possibile caricare il riepilogo delle offerte.
+            </p>
+
+          } @else if (riepilogoOfferte) {
+
+            <p>
+              <strong>Offerta più alta:</strong>
+
+              @if (riepilogoOfferte.offertaMassima !== null) {
+                {{
+                  riepilogoOfferte.offertaMassima
+                    | currency:'EUR':'symbol':'1.2-2':'it'
+                }}
+              } @else {
+                Nessuna offerta ricevuta
+              }
+            </p>
+
+            <p>
+              <strong>Numero di offerte:</strong>
+              {{ riepilogoOfferte.numeroOfferte }}
+            </p>
+
+          }
+
+          <!-- Modulo per presentare un'offerta -->
+          @if (puoPresentareOfferta) {
+
+            <div class="modulo-offerta">
+
+              <h3>Presenta un'offerta</h3>
+
+              <p>
+                Inserisci un importo superiore all'offerta più alta.
+                Se non ci sono offerte, puoi partire dal prezzo base.
+              </p>
+
+              @if (offertaInviata) {
+                <p class="offerta-successo contatto-successo" role="status">
+                  Offerta registrata correttamente!
+                </p>
+              }
+
+              @if (erroreOfferta) {
+                <p class="offerta-errore contatto-errore" role="alert">
+                  {{ erroreOfferta }}
+                </p>
+              }
+
+              <form
+                #moduloOfferta="ngForm"
+                (ngSubmit)="inviaOfferta()"
+                class="modulo-contatto"
+              >
+
+                <div class="campo-offerta campo-contatto">
+
+                  <label for="importo-offerta">
+                    Importo dell'offerta (€)
+                  </label>
+
+                  <input
+                    id="importo-offerta"
+                    name="importoOfferta"
+                    type="number"
+                    min="0.01"
+                    max="9999999999.99"
+                    step="0.01"
+                    [(ngModel)]="importoOfferta"
+                    required
+                    placeholder="Es. 115000"
+                  />
+
+                </div>
+
+                <button
+                  type="submit"
+                  class="pulsante-offerta pulsante-invia-contatto"
+                  [disabled]="
+                    moduloOfferta.invalid ||
+                    invioOffertaInCorso ||
+                    caricamentoRiepilogo ||
+                    !riepilogoOfferte
+                  "
+                >
+                  {{
+                    invioOffertaInCorso
+                      ? 'Invio in corso...'
+                      : 'Presenta offerta'
+                  }}
+                </button>
+
+              </form>
+
+            </div>
+
+          }
+
+        </section>
+
+      }
+
+      <!-- Recensioni dell'immobile -->
       <section class="sezione-recensioni">
 
         <h2>Recensioni dell'immobile</h2>
@@ -222,12 +384,12 @@
 
       </section>
 
-      <!-- NUOVA SEZIONE: Contatta il venditore -->
+      <!-- Prenotazione di una visita -->
+      <app-prenota-visita
+        [annuncioId]="immobile.id">
+      </app-prenota-visita>
 
-        <app-prenota-visita
-          [annuncioId]="immobile.id">
-        </app-prenota-visita>
-
+      <!-- Contatta il venditore -->
       <section class="sezione-contatto">
 
         <h2>Contatta il venditore</h2>
