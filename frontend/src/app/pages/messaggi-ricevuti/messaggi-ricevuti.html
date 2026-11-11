@@ -1,0 +1,94 @@
+
+<section class="pagina-messaggi">
+
+  <div class="contenitore-messaggi">
+
+    <header class="intestazione-messaggi">
+      <h1>Messaggi ricevuti</h1>
+      <p>
+        Qui puoi consultare i messaggi inviati dagli utenti
+        interessati ai tuoi annunci immobiliari.
+      </p>
+    </header>
+
+    @if (caricamento) {
+
+      <p class="stato-messaggi">
+        Caricamento dei messaggi...
+      </p>
+
+    } @else if (errore) {
+
+      <div class="errore-messaggi" role="alert">
+        <p>{{ errore }}</p>
+
+        <button
+          type="button"
+          (click)="caricaMessaggi()"
+        >
+          Riprova
+        </button>
+      </div>
+
+    } @else if (messaggi.length === 0) {
+
+      <div class="nessun-messaggio">
+        <h2>Nessun messaggio ricevuto</h2>
+        <p>
+          Quando un utente ti contatterà per uno dei tuoi
+          annunci, il suo messaggio comparirà qui.
+        </p>
+        <a routerLink="/annunci">
+          Visualizza gli annunci
+        </a>
+      </div>
+
+    } @else {
+
+      <p class="conteggio-messaggi">
+        Messaggi ricevuti: {{ messaggi.length }}
+      </p>
+
+      <div class="lista-messaggi">
+
+        @for (contatto of messaggi; track contatto.id) {
+
+          <article class="scheda-messaggio">
+
+            <div class="testata-messaggio">
+
+              <h2>{{ contatto.oggetto }}</h2>
+
+              <time>
+                {{ contatto.dataInvio | date:'dd/MM/yyyy HH:mm' }}
+              </time>
+
+            </div>
+
+            <p class="mittente-messaggio">
+              <strong>Da:</strong>
+              {{ contatto.emailMittente }}
+            </p>
+
+            <p class="testo-messaggio">
+              {{ contatto.messaggio }}
+            </p>
+
+            <a
+              [routerLink]="['/annunci', contatto.annuncioId]"
+              class="collegamento-annuncio"
+            >
+              Visualizza annuncio #{{ contatto.annuncioId }}
+            </a>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</section>

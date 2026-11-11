@@ -9,7 +9,15 @@
     @if (authService.utenteCorrente(); as utente) {
 
       @if (utente.ruolo === 'VENDITORE' || utente.ruolo === 'ROLE_VENDITORE') {
-        <a routerLink="/pubblica-annuncio">Pubblica annuncio</a>
+
+        <a routerLink="/pubblica-annuncio">
+          Pubblica annuncio
+        </a>
+
+        <a routerLink="/messaggi-ricevuti">
+          Messaggi ricevuti
+        </a>
+
       }
 
       <span class="nav-placeholder">
@@ -23,8 +31,11 @@
         [disabled]="uscitaInCorso()">
         {{ uscitaInCorso() ? 'Uscita...' : 'Esci' }}
       </button>
+
     } @else {
+
       <a routerLink="/login">Accedi</a>
+
     }
 
     @if (erroreLogout()) {

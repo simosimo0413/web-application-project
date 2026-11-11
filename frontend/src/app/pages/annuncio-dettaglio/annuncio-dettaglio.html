@@ -38,66 +38,67 @@
         </p>
       </header>
 
-     
-<div class="immagine-principale">
+      <!-- Fotografia principale -->
+      <div class="immagine-principale">
 
-  @if (caricamentoFoto) {
+        @if (caricamentoFoto) {
 
-    <div class="foto-assente">
-      Caricamento fotografie...
-    </div>
+          <div class="foto-assente">
+            Caricamento fotografie...
+          </div>
 
-  } @else if (foto.length > 0) {
+        } @else if (foto.length > 0) {
 
-    <img
-      [src]="foto[0].url"
-      [alt]="foto[0].descrizione || immobile.titolo"
-    />
+          <img
+            [src]="foto[0].url"
+            [alt]="foto[0].descrizione || immobile.titolo"
+          />
 
-  } @else if (immobile.fotoPrincipale) {
+        } @else if (immobile.fotoPrincipale) {
 
-    <img
-      [src]="immobile.fotoPrincipale"
-      [alt]="immobile.titolo"
-    />
+          <img
+            [src]="immobile.fotoPrincipale"
+            [alt]="immobile.titolo"
+          />
 
-  } @else {
+        } @else {
 
-    <div class="foto-assente">
-      Foto non disponibile
-    </div>
+          <div class="foto-assente">
+            Foto non disponibile
+          </div>
 
-  }
+        }
 
-</div>
+      </div>
 
-@if (foto.length > 1) {
+      <!-- Galleria delle fotografie aggiuntive -->
+      @if (foto.length > 1) {
 
-  <div class="galleria-fotografie">
+        <div class="galleria-fotografie">
 
-    @for (fotografia of foto.slice(1); track fotografia.id) {
+          @for (fotografia of foto.slice(1); track fotografia.id) {
 
-      <img
-        [src]="fotografia.url"
-        [alt]="fotografia.descrizione || immobile.titolo"
-        loading="lazy"
-      />
+            <img
+              [src]="fotografia.url"
+              [alt]="fotografia.descrizione || immobile.titolo"
+              loading="lazy"
+            />
 
-    }
+          }
 
-  </div>
+        </div>
 
-}
+      }
 
-@if (erroreFoto) {
+      @if (erroreFoto) {
 
-  <p class="messaggio">
-    Non è stato possibile caricare le fotografie aggiuntive.
-  </p>
+        <p class="messaggio">
+          Non è stato possibile caricare le fotografie aggiuntive.
+        </p>
 
-}
+      }
 
-
+      <!-- Informazioni e prezzo -->
       <div class="contenuto-dettaglio">
 
         <div class="informazioni">
@@ -111,6 +112,7 @@
           <h2>Caratteristiche</h2>
 
           <div class="caratteristiche">
+
             <div>
               <strong>Categoria</strong>
               <span>{{ immobile.categoria }}</span>
@@ -130,14 +132,17 @@
               <strong>Città</strong>
               <span>{{ immobile.citta }}</span>
             </div>
+
           </div>
 
         </div>
 
         <aside class="riepilogo-prezzo">
 
-          <p class="prezzo-precedente"
-             *ngIf="immobile.prezzoPrecedente">
+          <p
+            class="prezzo-precedente"
+            *ngIf="immobile.prezzoPrecedente"
+          >
             {{ immobile.prezzoPrecedente | currency:'EUR':'symbol':'1.2-2':'it' }}
           </p>
 
@@ -150,6 +155,93 @@
         </aside>
 
       </div>
+
+      <!-- NUOVA SEZIONE: Contatta il venditore -->
+      <section class="sezione-contatto">
+
+        <h2>Contatta il venditore</h2>
+
+        <p>
+          Sei interessato a questo immobile?
+          Invia un messaggio per richiedere informazioni.
+        </p>
+
+        <!-- Conferma invio -->
+        @if (contattoInviato) {
+
+          <p class="contatto-successo" role="status">
+            Messaggio inviato correttamente!
+          </p>
+
+        }
+
+        <!-- Errore invio -->
+        @if (erroreContatto) {
+
+          <p class="contatto-errore" role="alert">
+            {{ erroreContatto }}
+          </p>
+
+        }
+
+        <!-- Modulo contatto -->
+        <form
+          #moduloContatto="ngForm"
+          (ngSubmit)="inviaContatto()"
+          class="modulo-contatto"
+        >
+
+          <div class="campo-contatto">
+
+            <label for="oggetto-contatto">
+              Oggetto
+            </label>
+
+            <input
+              id="oggetto-contatto"
+              name="oggettoContatto"
+              type="text"
+              [(ngModel)]="oggettoContatto"
+              maxlength="255"
+              required
+              placeholder="Es. Richiesta informazioni sull'immobile"
+            />
+
+          </div>
+
+          <div class="campo-contatto">
+
+            <label for="messaggio-contatto">
+              Messaggio
+            </label>
+
+            <textarea
+              id="messaggio-contatto"
+              name="messaggioContatto"
+              [(ngModel)]="messaggioContatto"
+              maxlength="5000"
+              rows="5"
+              required
+              placeholder="Scrivi qui il tuo messaggio al venditore..."
+            ></textarea>
+
+          </div>
+
+          <button
+            type="submit"
+            class="pulsante-invia-contatto"
+            [disabled]="moduloContatto.invalid || invioContattoInCorso"
+          >
+            {{
+              invioContattoInCorso
+                ? 'Invio in corso...'
+                : 'Invia messaggio'
+            }}
+          </button>
+
+        </form>
+
+      </section>
 
     </div>
 

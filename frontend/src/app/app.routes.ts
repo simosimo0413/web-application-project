@@ -8,6 +8,14 @@ import { Login } from './pages/login/login';
 import { PubblicaAnnuncio } from './pages/pubblica-annuncio/pubblica-annuncio';
 
 export const routes: Routes = [
+
+{
+  path: 'messaggi-ricevuti',
+  loadComponent: () =>
+    import('./pages/messaggi-ricevuti/messaggi-ricevuti')
+      .then(m => m.MessaggiRicevuti)
+},
+
   { path: 'registrazione', component: Registrazione },
   { path: 'login', component: Login },
   { path: 'pubblica-annuncio', component: PubblicaAnnuncio },

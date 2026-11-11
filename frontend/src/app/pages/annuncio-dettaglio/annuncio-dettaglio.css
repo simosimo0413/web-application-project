@@ -217,3 +217,110 @@
   }
 }
 
+
+/* Sezione contatti dell'annuncio */
+
+.sezione-contatto {
+  margin-top: 36px;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+.sezione-contatto h2 {
+  margin: 0 0 12px;
+  color: #1e293b;
+  font-size: 1.5rem;
+}
+
+.sezione-contatto > p {
+  margin-bottom: 22px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.modulo-contatto {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.campo-contatto {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo-contatto label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.campo-contatto input,
+.campo-contatto textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font: inherit;
+  background-color: #ffffff;
+}
+
+.campo-contatto textarea {
+  resize: vertical;
+  min-height: 130px;
+}
+
+.campo-contatto input:focus,
+.campo-contatto textarea:focus {
+  outline: 2px solid #93c5fd;
+  border-color: #2563eb;
+}
+
+.pulsante-invia-contatto {
+  align-self: flex-start;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pulsante-invia-contatto:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.pulsante-invia-contatto:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.contatto-successo {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: #f0fdf4;
+  color: #166534 !important;
+}
+
+.contatto-errore {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: #fef2f2;
+  color: #b91c1c !important;
+}
+
+@media (max-width: 600px) {
+  .sezione-contatto {
+    padding: 18px;
+  }
+
+  .pulsante-invia-contatto {
+    width: 100%;
+  }
+}
+
+

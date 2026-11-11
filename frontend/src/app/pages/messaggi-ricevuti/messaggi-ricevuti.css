@@ -1,0 +1,139 @@
+
+.pagina-messaggi {
+  min-height: 70vh;
+  padding: 40px 20px 70px;
+  background-color: #f8fafc;
+}
+
+.contenitore-messaggi {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.intestazione-messaggi {
+  margin-bottom: 32px;
+}
+
+.intestazione-messaggi h1 {
+  margin: 0 0 12px;
+  color: #0f172a;
+  font-size: 2rem;
+}
+
+.intestazione-messaggi p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.stato-messaggi,
+.nessun-messaggio,
+.errore-messaggi {
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background-color: white;
+}
+
+.nessun-messaggio h2 {
+  margin-top: 0;
+  color: #1e293b;
+}
+
+.nessun-messaggio p {
+  color: #64748b;
+}
+
+.errore-messaggi {
+  color: #b91c1c;
+}
+
+.errore-messaggi button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.conteggio-messaggi {
+  margin-bottom: 20px;
+  color: #475569;
+  font-weight: 600;
+}
+
+.lista-messaggi {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.scheda-messaggio {
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+}
+
+.testata-messaggio {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.testata-messaggio h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+.testata-messaggio time {
+  flex-shrink: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.mittente-messaggio {
+  color: #475569;
+  overflow-wrap: anywhere;
+}
+
+.testo-messaggio {
+  margin: 18px 0;
+  color: #334155;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.collegamento-annuncio {
+  display: inline-block;
+  margin-top: 8px;
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.collegamento-annuncio:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .pagina-messaggi {
+    padding: 24px 14px 50px;
+  }
+
+  .scheda-messaggio {
+    padding: 18px;
+  }
+
+  .testata-messaggio {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
