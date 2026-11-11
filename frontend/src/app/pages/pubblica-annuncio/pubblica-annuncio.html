@@ -259,20 +259,40 @@
       <p class="errore-foto">{{ erroreFoto }}</p>
     }
 
-    @if (fotoCaricate.length > 0) {
-      <h3>Fotografie caricate</h3>
 
-      <div class="anteprima-foto">
-        @for (fotografia of fotoCaricate; track fotografia.id) {
-          <img
-            [src]="fotografia.url"
-            [alt]="fotografia.descrizione || 'Fotografia immobile'"
-            width="180"
-            loading="lazy"
-          />
-        }
+@if (fotoCaricate.length > 0) {
+  <h3>Fotografie caricate</h3>
+
+  <div class="anteprima-foto">
+    @for (fotografia of fotoCaricate; track fotografia.id) {
+
+      <div class="foto-caricata">
+
+        <img
+          [src]="fotografia.url"
+          [alt]="fotografia.descrizione || 'Fotografia immobile'"
+          loading="lazy"
+        />
+
+        <button
+          type="button"
+          class="pulsante-elimina-foto"
+          (click)="eliminaFoto(fotografia)"
+          [disabled]="fotoInEliminazioneId !== null"
+        >
+          {{
+            fotoInEliminazioneId === fotografia.id
+              ? 'Eliminazione...'
+              : 'Elimina foto'
+          }}
+        </button>
+
       </div>
+
     }
+  </div>
+}
+
     </section>
 }
 

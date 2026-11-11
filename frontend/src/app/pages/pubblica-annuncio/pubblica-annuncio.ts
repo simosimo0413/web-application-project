@@ -42,6 +42,7 @@ private fotoService = inject(FotoService);
 
 fotoSelezionata: File | null = null;
 descrizioneFoto = '';
+fotoInEliminazioneId: number | null = null;
 
 fotoCaricate: Foto[] = [];
 
@@ -211,5 +212,62 @@ caricaFoto(): void {
   });
 }
 
+
+eliminaFoto(fotografia: Foto): void {
+  const annuncioId = this.annuncioId;
+
+  if (
+    annuncioId === null ||
+    this.fotoInEliminazioneId !== null
+  ) {
+    return;
+  }
+
+  const conferma = window.confirm(
+    'Sei sicuro di voler eliminare questa fotografia?'
+  );
+
+  if (!conferma) {
+    return;
+  }
+
+  this.fotoInEliminazioneId = fotografia.id;
+  this.erroreFoto = '';
+
+  this.fotoService.eliminaFoto(
+    annuncioId,
+    fotografia.id
+  ).subscribe({
+    next: () => {
+      this.fotoCaricate = this.fotoCaricate.filter(
+        foto => foto.id !== fotografia.id
+      );
+
+      this.fotoInEliminazioneId = null;
+      this.cdr.markForCheck();
+    },
+
+    error: (err) => {
+      console.error(
+        'Errore eliminazione fotografia:',
+        err
+      );
+
+      if (err.status === 401 || err.status === 403) {
+        this.erroreFoto =
+          'Non sei autorizzato a eliminare questa fotografia.';
+      } else if (err.status === 404) {
+        this.erroreFoto =
+          'La fotografia non è stata trovata.';
+      } else {
+        this.erroreFoto =
+          'Non è stato possibile eliminare la fotografia.';
+      }
+
+      this.fotoInEliminazioneId = null;
+      this.cdr.markForCheck();
+    }
+  });
+}
 
 }

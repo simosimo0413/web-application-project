@@ -45,4 +45,14 @@ caricaFoto(
   );
 }
 
+eliminaFoto(annuncioId: number, fotoId: number): Observable<void> {
+  return this.http.get('/api/auth/csrf').pipe(
+    switchMap(() =>
+      this.http.delete<void>(
+        `/api/annunci/${annuncioId}/foto/${fotoId}`
+      )
+    )
+  );
+}
+
 }
