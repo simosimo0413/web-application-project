@@ -1,0 +1,191 @@
+
+.pagina-visite {
+  min-height: 70vh;
+  padding: 40px 20px 70px;
+  background: #f8fafc;
+}
+
+.contenitore-visite {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.intestazione {
+  margin-bottom: 30px;
+}
+
+.intestazione h1 {
+  margin: 0 0 12px;
+  color: #0f172a;
+  font-size: 32px;
+}
+
+.intestazione p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.messaggio,
+.stato-vuoto {
+  padding: 30px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  color: #475569;
+}
+
+.stato-vuoto h2 {
+  margin: 0 0 10px;
+  color: #1e293b;
+}
+
+.stato-vuoto p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.elenco-visite {
+  display: grid;
+  gap: 20px;
+}
+
+.scheda-visita {
+  padding: 25px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+}
+
+.testata-visita {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.testata-visita h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 20px;
+}
+
+.stato {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.stato-attesa {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.stato-confermata {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.stato-scaduta {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.dettagli-visita {
+  margin-bottom: 22px;
+}
+
+.dettagli-visita p {
+  margin: 0 0 12px;
+  color: #475569;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.dettagli-visita strong {
+  color: #334155;
+}
+
+.dettagli-visita a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.dettagli-visita a:hover {
+  text-decoration: underline;
+}
+
+.pulsante-conferma {
+  padding: 12px 22px;
+  color: #ffffff;
+  background: #2563eb;
+  border: none;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pulsante-conferma:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.pulsante-conferma:focus-visible {
+  outline: 2px solid #1e40af;
+  outline-offset: 3px;
+}
+
+.pulsante-conferma:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.messaggio-successo,
+.messaggio-errore {
+  margin: 15px 0;
+  padding: 14px 18px;
+  border-radius: 10px;
+  line-height: 1.6;
+}
+
+.messaggio-successo {
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.messaggio-errore {
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+@media (max-width: 600px) {
+  .pagina-visite {
+    padding: 25px 14px 50px;
+  }
+
+  .intestazione h1 {
+    font-size: 26px;
+  }
+
+  .scheda-visita {
+    padding: 18px;
+  }
+
+  .testata-visita h2 {
+    font-size: 18px;
+  }
+
+  .pulsante-conferma {
+    width: 100%;
+  }
+}
