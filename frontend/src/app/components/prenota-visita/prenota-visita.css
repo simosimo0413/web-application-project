@@ -1,0 +1,116 @@
+
+.prenota-visita {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 28px;
+  padding: 28px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.prenota-visita h2 {
+  margin: 0 0 12px;
+  color: #1e293b;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.descrizione {
+  margin: 0 0 24px;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 20px;
+}
+
+.campo label {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.campo input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  color: #1e293b;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 15px;
+}
+
+.campo input:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-color: #2563eb;
+}
+
+.prenota-visita button {
+  width: 100%;
+  padding: 14px 20px;
+  color: #ffffff;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.prenota-visita button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.prenota-visita button:focus-visible {
+  outline: 2px solid #1e40af;
+  outline-offset: 3px;
+}
+
+.prenota-visita button:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.messaggio-successo,
+.messaggio-errore {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border-radius: 9px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.messaggio-successo {
+  color: #166534;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.messaggio-errore {
+  color: #991b1b;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+@media (max-width: 600px) {
+  .prenota-visita {
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .prenota-visita h2 {
+    font-size: 21px;
+  }
+}

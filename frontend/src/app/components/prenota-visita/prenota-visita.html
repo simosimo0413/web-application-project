@@ -1,0 +1,52 @@
+
+<section class="prenota-visita">
+
+  <h2>Prenota una visita</h2>
+
+  <p class="descrizione">
+    Vuoi visitare questo immobile?
+    Scegli una data e un orario e invia
+    la tua richiesta al venditore.
+  </p>
+
+  <form (ngSubmit)="inviaRichiesta()">
+
+    <div class="campo">
+      <label for="dataVisita">
+        Data e ora della visita
+      </label>
+
+      <input
+        id="dataVisita"
+        name="dataVisita"
+        type="datetime-local"
+        [(ngModel)]="dataOraLocale"
+        [min]="dataMinima"
+        [disabled]="invioInCorso"
+        required
+      />
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="invioInCorso || !dataOraLocale"
+    >
+      {{ invioInCorso ? 'Invio in corso...' : 'Richiedi visita' }}
+    </button>
+
+  </form>
+
+  @if (richiestaInviata) {
+    <p class="messaggio-successo" role="status">
+      Richiesta inviata con successo!
+      Il venditore dovrà confermare la visita.
+    </p>
+  }
+
+  @if (errore) {
+    <p class="messaggio-errore" role="alert">
+      {{ errore }}
+    </p>
+  }
+
+</section>

@@ -9,6 +9,15 @@ import { PubblicaAnnuncio } from './pages/pubblica-annuncio/pubblica-annuncio';
 
 export const routes: Routes = [
 
+
+{
+  path: 'visite-ricevute',
+  loadComponent: () =>
+    import('./pages/visite-ricevute/visite-ricevute')
+      .then(m => m.VisiteRicevute)
+},
+
+
 {
   path: 'messaggi-ricevuti',
   loadComponent: () =>

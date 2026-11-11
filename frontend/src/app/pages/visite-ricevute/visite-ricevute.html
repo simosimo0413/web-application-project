@@ -1,0 +1,132 @@
+
+<section class="pagina-visite">
+
+  <div class="contenitore-visite">
+
+    <header class="intestazione">
+      <h1>Visite ricevute</h1>
+
+      <p>
+        Visualizza le richieste di visita per i tuoi immobili
+        e conferma gli appuntamenti.
+      </p>
+    </header>
+
+    <!-- Caricamento -->
+    @if (caricamento) {
+      <p class="messaggio">
+        Caricamento visite ricevute...
+      </p>
+    }
+
+    <!-- Errore nel recupero delle visite -->
+    @if (!caricamento && erroreCaricamento) {
+      <div class="messaggio-errore" role="alert">
+        {{ erroreCaricamento }}
+      </div>
+    }
+
+    <!-- Nessuna visita ricevuta -->
+    @if (
+      !caricamento &&
+      !erroreCaricamento &&
+      visite.length === 0
+    ) {
+      <div class="stato-vuoto">
+        <h2>Nessuna richiesta di visita</h2>
+        <p>
+          Quando un acquirente richiederà una visita
+          a uno dei tuoi immobili, la troverai qui.
+        </p>
+      </div>
+    }
+
+    <!-- Elenco delle visite -->
+    @if (
+      !caricamento &&
+      !erroreCaricamento &&
+      visite.length > 0
+    ) {
+
+      @if (messaggioConferma) {
+        <p class="messaggio-successo" role="status">
+          {{ messaggioConferma }}
+        </p>
+      }
+
+      <div class="elenco-visite">
+
+        @for (visita of visite; track visita.id) {
+
+          <article class="scheda-visita">
+
+            <div class="testata-visita">
+              <h2>Richiesta di visita #{{ visita.id }}</h2>
+
+              @if (visita.confermata) {
+                <span class="stato stato-confermata">
+                  Confermata
+                </span>
+              } @else if (visitaPassata(visita.dataVisita)) {
+                <span class="stato stato-scaduta">
+                  Data trascorsa
+                </span>
+              } @else {
+                <span class="stato stato-attesa">
+                  In attesa
+                </span>
+              }
+            </div>
+
+            <div class="dettagli-visita">
+
+              <p>
+                <strong>Annuncio:</strong>
+                <a [routerLink]="['/annunci', visita.annuncioId]">
+                  Immobile #{{ visita.annuncioId }}
+                </a>
+              </p>
+
+              <p>
+                <strong>Acquirente:</strong>
+                {{ visita.emailAcquirente }}
+              </p>
+
+              <p>
+                <strong>Data e ora:</strong>
+                {{ visita.dataVisita | date:'dd/MM/yyyy HH:mm' }}
+              </p>
+
+            </div>
+
+            @if (!visita.confermata && !visitaPassata(visita.dataVisita)) {
+              <button
+                type="button"
+                class="pulsante-conferma"
+                (click)="confermaVisita(visita)"
+                [disabled]="visitaInConfermaId !== null"
+              >
+                {{
+                  visitaInConfermaId === visita.id
+                    ? 'Conferma in corso...'
+                    : 'Conferma visita'
+                }}
+              </button>
+            }
+
+            @if (erroreConferma && erroreConfermaId === visita.id) {
+              <p class="messaggio-errore" role="alert">
+                {{ erroreConferma }}
+              </p>
+            }
+
+          </article>
+
+        }
+
+      </div>
+    }
+
+  </div>
+
+</section>
