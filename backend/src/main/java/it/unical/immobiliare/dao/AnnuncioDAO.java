@@ -15,7 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import java.util.Optional;
 
 @Repository
-public class AnnuncioDAO {
+public class AnnuncioDAO implements AnnuncioLetturaDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -23,6 +23,7 @@ public class AnnuncioDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public List<AnnuncioCardDTO> trovaAnnunciAttivi(
             String citta,
             BigDecimal prezzoMax,
@@ -100,6 +101,7 @@ public class AnnuncioDAO {
         );
     }
     
+    @Override
     public Optional<AnnuncioDettaglioDTO> trovaAnnuncioPerId(Long id) {
 
         String sql = """

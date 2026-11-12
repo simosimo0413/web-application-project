@@ -1,6 +1,6 @@
 package it.unical.immobiliare.controller;
 
-import it.unical.immobiliare.dao.AnnuncioDAO;
+import it.unical.immobiliare.dao.AnnuncioLetturaDAO;
 import it.unical.immobiliare.dto.AnnuncioCardDTO;
 import it.unical.immobiliare.dto.AnnuncioDettaglioDTO;
 import it.unical.immobiliare.dto.PubblicazioneAnnuncioRequest;
@@ -32,12 +32,12 @@ import java.util.Map;
 @RequestMapping("/api/annunci")
 public class AnnuncioController {
 
-    private final AnnuncioDAO annuncioDAO;
+    private final AnnuncioLetturaDAO annuncioDAO;
     private final PubblicazioneAnnuncioService pubblicazioneService;
     private final GestioneAnnuncioService gestioneService;
 
     public AnnuncioController(
-            AnnuncioDAO annuncioDAO,
+            AnnuncioLetturaDAO annuncioDAO,
             PubblicazioneAnnuncioService pubblicazioneService,
             GestioneAnnuncioService gestioneService) {
 
