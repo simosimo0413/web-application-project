@@ -22,11 +22,12 @@ import { RecensioneService } from '../../services/recensione';
 import { FotoService, Foto } from '../../services/foto';
 import { AuthService } from '../../services/auth';
 import { MappaImmobile } from '../../components/mappa-immobile/mappa-immobile';
+import { FacebookPromozione } from '../../components/facebook-promozione/facebook-promozione';
 
 @Component({
   selector: 'app-annuncio-dettaglio',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, PrenotaVisita, MappaImmobile],
+  imports: [CommonModule, RouterLink, FormsModule, PrenotaVisita, MappaImmobile, FacebookPromozione],
   templateUrl: './annuncio-dettaglio.html',
   styleUrl: './annuncio-dettaglio.css'
 })

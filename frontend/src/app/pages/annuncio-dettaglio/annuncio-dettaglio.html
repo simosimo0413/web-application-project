@@ -229,6 +229,12 @@
         </section>
       }
 
+      <!-- Promozione tramite Meta Graph API: disponibile solo al venditore proprietario. -->
+      @if (authService.utenteCorrente()?.ruolo === 'VENDITORE' &&
+           authService.utenteCorrente()?.id === immobile.venditoreId) {
+        <app-facebook-promozione [annuncioId]="immobile.id"></app-facebook-promozione>
+      }
+
       <!-- Asta associata all'immobile -->
       @if (caricamentoAsta) {
 
