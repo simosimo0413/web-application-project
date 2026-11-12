@@ -197,6 +197,7 @@ public class AnnuncioDAO implements AnnuncioLetturaDAO {
         JOIN utenti u ON a.venditore_id = u.id
         WHERE a.id = ?
         AND u.email = ?
+        AND a.stato = 'ATTIVO'
         """;
 
     return jdbcTemplate.query(
