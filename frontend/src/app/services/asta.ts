@@ -17,4 +17,20 @@ export class AstaService {
       `/api/aste/annunci/${annuncioId}`
     );
   }
+
+
+creaPerAnnuncio(
+  annuncioId: number,
+  dati: {
+    prezzoBase: number;
+    inizio: string;
+    fine: string;
+  }
+): Observable<{ id: number }> {
+  return this.http.post<{ id: number }>(
+    `/api/aste/annunci/${annuncioId}`,
+    dati
+  );
+}
+
 }

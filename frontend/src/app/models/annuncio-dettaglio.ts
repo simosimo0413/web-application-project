@@ -12,4 +12,6 @@ export interface AnnuncioDettaglio {
   categoria: string;
   tipoContratto: 'VENDITA' | 'AFFITTO';
   fotoPrincipale: string | null;
+  venditoreId: number;
 }
+

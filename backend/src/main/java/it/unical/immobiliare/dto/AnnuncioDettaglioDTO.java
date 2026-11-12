@@ -1,3 +1,4 @@
+
 package it.unical.immobiliare.dto;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ public record AnnuncioDettaglioDTO(
     String provincia,
     String categoria,
     String tipoContratto,
-    String fotoPrincipale
+    String fotoPrincipale,
+    Long venditoreId
 ) {
 }

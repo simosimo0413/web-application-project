@@ -31,6 +31,7 @@ public class AnnuncioDAO {
         StringBuilder sql = new StringBuilder("""
             SELECT
                 a.id,
+                a.venditore_id,
                 a.titolo,
                 a.prezzo,
                 a.prezzo_precedente,
@@ -94,6 +95,7 @@ public class AnnuncioDAO {
         String sql = """
             SELECT
                 a.id,
+                a.venditore_id,
                 a.titolo,
                 i.descrizione,
                 a.prezzo,
@@ -130,7 +132,8 @@ public class AnnuncioDAO {
                     rs.getString("provincia"),
                     rs.getString("categoria"),
                     rs.getString("tipo_contratto"),
-                    rs.getString("foto_principale")
+                    rs.getString("foto_principale"),
+                    rs.getLong("venditore_id")
                 ),
                 id
             );

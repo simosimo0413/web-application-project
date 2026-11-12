@@ -50,6 +50,15 @@ erroreContatto = '';
   asta: Asta | null = null;
   caricamentoAsta = false;
   erroreAsta = false;
+
+  prezzoBaseNuovaAsta: number | null = null;
+  inizioNuovaAsta = '';
+  fineNuovaAsta = '';
+
+  creazioneAstaInCorso = false;
+  astaCreata = false;
+  erroreCreazioneAsta = '';
+
   riepilogoOfferte: OffertaRiepilogo | null = null;
   caricamentoRiepilogo = false;
   erroreRiepilogo = false;
@@ -205,6 +214,20 @@ private caricaRiepilogoOfferte(astaId: number): void {
 }
 
 
+get puoCreareAsta(): boolean {
+  const utente = this.authService.utenteCorrente();
+
+  return (
+    utente?.ruolo === 'VENDITORE' &&
+    this.annuncio !== null &&
+    utente.id === this.annuncio.venditoreId &&
+    this.annuncio.tipoContratto === 'VENDITA' &&
+    !this.caricamentoAsta &&
+    !this.erroreAsta &&
+    this.asta === null
+  );
+}
+
 get puoPresentareOfferta(): boolean {
   const utente = this.authService.utenteCorrente();
 
@@ -214,6 +237,127 @@ get puoPresentareOfferta(): boolean {
   );
 }
 
+
+creaAsta(): void {
+
+  // 1. Verifica che il venditore possa creare l'asta.
+  if (
+    !this.puoCreareAsta ||
+    !this.annuncio ||
+    this.creazioneAstaInCorso
+  ) {
+    return;
+  }
+
+  this.erroreCreazioneAsta = '';
+  this.astaCreata = false;
+
+  const prezzoBase = this.prezzoBaseNuovaAsta;
+
+  // 2. Controlla il prezzo base.
+  if (
+    prezzoBase === null ||
+    !Number.isFinite(prezzoBase) ||
+    prezzoBase <= 0 ||
+    prezzoBase > 9999999999.99 ||
+    Math.round(prezzoBase * 100) / 100 !== prezzoBase
+  ) {
+    this.erroreCreazioneAsta =
+      'Inserisci un prezzo base valido, con massimo due decimali.';
+    return;
+  }
+
+  // 3. Controlla che entrambe le date siano presenti.
+  if (!this.inizioNuovaAsta || !this.fineNuovaAsta) {
+    this.erroreCreazioneAsta =
+      'Inserisci la data di inizio e quella di scadenza.';
+    return;
+  }
+
+  const inizio = new Date(this.inizioNuovaAsta);
+  const fine = new Date(this.fineNuovaAsta);
+
+  // 4. Controlla che le date siano valide.
+  if (
+    !Number.isFinite(inizio.getTime()) ||
+    !Number.isFinite(fine.getTime())
+  ) {
+    this.erroreCreazioneAsta =
+      'Le date inserite non sono valide.';
+    return;
+  }
+
+  // 5. L'asta deve iniziare nel futuro.
+  if (inizio.getTime() <= Date.now()) {
+    this.erroreCreazioneAsta =
+      'La data di inizio deve essere futura.';
+    return;
+  }
+
+  // 6. La scadenza deve essere successiva all'inizio.
+  if (fine.getTime() <= inizio.getTime()) {
+    this.erroreCreazioneAsta =
+      'La scadenza deve essere successiva alla data di inizio.';
+    return;
+  }
+
+  const annuncioId = this.annuncio.id;
+
+  // 7. Invia la richiesta al backend.
+  this.creazioneAstaInCorso = true;
+
+  this.astaService.creaPerAnnuncio(
+    annuncioId,
+    {
+      prezzoBase,
+      inizio: inizio.toISOString(),
+      fine: fine.toISOString()
+    }
+  ).subscribe({
+
+    next: () => {
+      this.creazioneAstaInCorso = false;
+      this.astaCreata = true;
+      this.erroreCreazioneAsta = '';
+
+      this.prezzoBaseNuovaAsta = null;
+      this.inizioNuovaAsta = '';
+      this.fineNuovaAsta = '';
+
+      // Recupera l'asta appena creata.
+      this.caricaAsta(annuncioId);
+
+      this.cdr.markForCheck();
+    },
+
+    error: (err) => {
+      console.error('Errore creazione asta:', err);
+
+      this.creazioneAstaInCorso = false;
+
+      if (err.status === 400) {
+        this.erroreCreazioneAsta =
+          'Controlla il prezzo base e le date inserite.';
+      } else if (err.status === 401 || err.status === 403) {
+        this.erroreCreazioneAsta =
+          'Non sei autorizzato a creare questa asta.';
+      } else if (err.status === 404) {
+        this.erroreCreazioneAsta =
+          'Annuncio non disponibile o non appartenente al venditore.';
+      } else if (err.status === 409) {
+        this.erroreCreazioneAsta =
+          'Esiste già un’asta per questo annuncio.';
+
+        this.caricaAsta(annuncioId);
+      } else {
+        this.erroreCreazioneAsta =
+          'Impossibile creare l’asta. Verifica che non sia già stata registrata prima di riprovare.';
+      }
+
+      this.cdr.markForCheck();
+    }
+  });
+}
 
 inviaOfferta(): void {
 

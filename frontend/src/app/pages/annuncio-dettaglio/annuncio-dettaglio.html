@@ -317,6 +317,108 @@
 
       }
 
+
+<!-- Creazione di un'asta da parte del proprietario -->
+@if (puoCreareAsta) {
+
+  <section class="sezione-asta">
+
+    <h2>Crea un'asta immobiliare</h2>
+
+    <p>
+      Imposta il prezzo base e il periodo durante il quale
+      gli acquirenti potranno presentare offerte.
+    </p>
+
+    @if (erroreCreazioneAsta) {
+      <p class="contatto-errore" role="alert">
+        {{ erroreCreazioneAsta }}
+      </p>
+    }
+
+    <form
+      #moduloCreaAsta="ngForm"
+      (ngSubmit)="creaAsta()"
+      class="modulo-contatto"
+    >
+
+      <div class="campo-contatto">
+
+        <label for="prezzo-base-asta">
+          Prezzo base (€)
+        </label>
+
+        <input
+          id="prezzo-base-asta"
+          name="prezzoBaseNuovaAsta"
+          type="number"
+          min="0.01"
+          max="9999999999.99"
+          step="0.01"
+          [(ngModel)]="prezzoBaseNuovaAsta"
+          required
+          placeholder="Es. 100000"
+        />
+
+      </div>
+
+      <div class="campo-contatto">
+
+        <label for="inizio-asta">
+          Data e ora di inizio
+        </label>
+
+        <input
+          id="inizio-asta"
+          name="inizioNuovaAsta"
+          type="datetime-local"
+          [(ngModel)]="inizioNuovaAsta"
+          required
+        />
+
+      </div>
+
+      <div class="campo-contatto">
+
+        <label for="fine-asta">
+          Data e ora di scadenza
+        </label>
+
+        <input
+          id="fine-asta"
+          name="fineNuovaAsta"
+          type="datetime-local"
+          [(ngModel)]="fineNuovaAsta"
+          required
+        />
+
+      </div>
+
+      <button
+        type="submit"
+        class="pulsante-invia-contatto"
+        [disabled]="moduloCreaAsta.invalid || creazioneAstaInCorso"
+      >
+        {{
+          creazioneAstaInCorso
+            ? 'Creazione in corso...'
+            : 'Crea asta'
+        }}
+      </button>
+
+    </form>
+
+  </section>
+
+}
+
+@if (astaCreata) {
+  <p class="contatto-successo" role="status">
+    Asta creata correttamente!
+  </p>
+}
+
+
       <!-- Recensioni dell'immobile -->
       <section class="sezione-recensioni">
 

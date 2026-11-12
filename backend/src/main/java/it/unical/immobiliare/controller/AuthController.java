@@ -1,5 +1,5 @@
 package it.unical.immobiliare.controller;
-
+import it.unical.immobiliare.dao.UtenteDAO;
 import it.unical.immobiliare.dto.LoginRequest;
 import it.unical.immobiliare.dto.RegistrazioneRequest;
 import it.unical.immobiliare.model.Utente;
@@ -30,17 +30,22 @@ public class AuthController {
 
     private final RegistrazioneService registrazioneService;
     private final LoginService loginService;
+    private final UtenteDAO utenteDAO;
 
     private final SecurityContextRepository securityContextRepository =
             new HttpSessionSecurityContextRepository();
 
-    public AuthController(
-            RegistrazioneService registrazioneService,
-            LoginService loginService) {
+                
+                public AuthController(
+                        RegistrazioneService registrazioneService,
+                        LoginService loginService,
+                        UtenteDAO utenteDAO) {
 
-        this.registrazioneService = registrazioneService;
-        this.loginService = loginService;
-    }
+                this.registrazioneService = registrazioneService;
+                this.loginService = loginService;
+                this.utenteDAO = utenteDAO;
+                }
+
 
     @PostMapping("/registrazione")
     public ResponseEntity<Map<String, Object>> registrazione(
@@ -119,16 +124,29 @@ public class AuthController {
                 "messaggio", "Accesso effettuato"
         ));
     }
-    @GetMapping("/me")
-    public ResponseEntity<Map<String, Object>> utenteCorrente(Authentication authentication) {
+    
+        @GetMapping("/me")
+        public ResponseEntity<Map<String, Object>> utenteCorrente(
+                Authentication authentication) {
+
         if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("errore", "Utente non autenticato"));
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("errore", "Utente non autenticato"));
+        }
+
+        var utente = utenteDAO
+                .trovaPerEmail(authentication.getName());
+
+        if (utente.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("errore", "Utente non trovato"));
         }
 
         return ResponseEntity.ok(Map.of(
-                "email", authentication.getName(),
+                "id", utente.get().getId(),
+                "email", utente.get().getEmail(),
                 "ruolo", authentication.getAuthorities().iterator().next().getAuthority()
         ));
-    }
+        }
+
 }
