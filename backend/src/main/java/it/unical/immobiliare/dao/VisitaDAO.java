@@ -69,6 +69,7 @@ public class VisitaDAO {
                 SELECT 1
                 FROM annunci
                 WHERE id = ?
+                  AND stato = 'ATTIVO'
             )
             """;
     
