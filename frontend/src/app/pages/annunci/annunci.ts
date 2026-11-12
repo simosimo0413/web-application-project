@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { Annuncio } from '../../models/annuncio';
-import { AnnuncioService } from '../../services/annuncio';
+import { AnnuncioService, FiltriAnnunci } from '../../services/annuncio';
 import { ImmobileCard } from '../../components/immobile-card/immobile-card';
 
 @Component({
@@ -21,11 +21,12 @@ export class Annunci implements OnInit {
 
   annunci: Annuncio[] = [];
 
-  filtri = {
+  filtri: FiltriAnnunci = {
     citta: '',
     prezzoMax: null as number | null,
     categoria: '',
-    tipoContratto: ''
+    tipoContratto: '',
+    ordinamento: 'RECENTI'
   };
 
   caricamento = true;

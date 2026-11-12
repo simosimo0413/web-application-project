@@ -4,6 +4,10 @@ import it.unical.immobiliare.dao.AnnuncioDAO;
 import it.unical.immobiliare.dto.AnnuncioCardDTO;
 import it.unical.immobiliare.dto.AnnuncioDettaglioDTO;
 import it.unical.immobiliare.dto.PubblicazioneAnnuncioRequest;
+import it.unical.immobiliare.dto.OrdinamentoAnnunci;
+import it.unical.immobiliare.dto.ModificaAnnuncioRequest;
+import it.unical.immobiliare.dto.RibassoPrezzoRequest;
+import it.unical.immobiliare.service.GestioneAnnuncioService;
 import it.unical.immobiliare.service.PubblicazioneAnnuncioService;
 
 import jakarta.validation.Valid;
@@ -12,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,13 +34,16 @@ public class AnnuncioController {
 
     private final AnnuncioDAO annuncioDAO;
     private final PubblicazioneAnnuncioService pubblicazioneService;
+    private final GestioneAnnuncioService gestioneService;
 
     public AnnuncioController(
             AnnuncioDAO annuncioDAO,
-            PubblicazioneAnnuncioService pubblicazioneService) {
+            PubblicazioneAnnuncioService pubblicazioneService,
+            GestioneAnnuncioService gestioneService) {
 
         this.annuncioDAO = annuncioDAO;
         this.pubblicazioneService = pubblicazioneService;
+        this.gestioneService = gestioneService;
     }
 
     @GetMapping
@@ -43,13 +51,15 @@ public class AnnuncioController {
             @RequestParam(required = false) String citta,
             @RequestParam(required = false) BigDecimal prezzoMax,
             @RequestParam(required = false) String categoria,
-            @RequestParam(required = false) String tipoContratto) {
+            @RequestParam(required = false) String tipoContratto,
+            @RequestParam(defaultValue = "RECENTI") OrdinamentoAnnunci ordinamento) {
 
         return annuncioDAO.trovaAnnunciAttivi(
                 citta,
                 prezzoMax,
                 categoria,
-                tipoContratto
+                tipoContratto,
+                ordinamento
         );
     }
 
@@ -81,4 +91,31 @@ public class AnnuncioController {
                 )
         );
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> modificaAnnuncio(
+            @PathVariable Long id,
+            @Valid @RequestBody ModificaAnnuncioRequest richiesta,
+            Authentication authentication) {
+        gestioneService.modifica(id, richiesta, authentication);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/ribasso")
+    public ResponseEntity<Void> ribassaPrezzo(
+            @PathVariable Long id,
+            @Valid @RequestBody RibassoPrezzoRequest richiesta,
+            Authentication authentication) {
+        gestioneService.ribassa(id, richiesta, authentication);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/chiudi")
+    public ResponseEntity<Void> chiudiAnnuncio(
+            @PathVariable Long id,
+            Authentication authentication) {
+        gestioneService.chiudi(id, authentication);
+        return ResponseEntity.noContent().build();
+    }
+
 }

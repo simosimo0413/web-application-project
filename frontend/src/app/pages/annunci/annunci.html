@@ -65,6 +65,21 @@
         </select>
       </div>
 
+      <div class="campo">
+        <label for="ordinamento">Ordina per</label>
+        <select
+          id="ordinamento"
+          name="ordinamento"
+          [(ngModel)]="filtri.ordinamento"
+        >
+          <option value="RECENTI">Più recenti</option>
+          <option value="PREZZO_ASC">Prezzo crescente</option>
+          <option value="PREZZO_DESC">Prezzo decrescente</option>
+          <option value="SUPERFICIE_ASC">Metri quadri crescenti</option>
+          <option value="SUPERFICIE_DESC">Metri quadri decrescenti</option>
+        </select>
+      </div>
+
       <button type="submit" class="pulsante-cerca">
         Cerca immobili
       </button>

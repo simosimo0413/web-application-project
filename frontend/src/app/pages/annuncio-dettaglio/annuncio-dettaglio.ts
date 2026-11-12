@@ -10,11 +10,11 @@ import { Asta } from '../../models/asta';
 import { AstaService } from '../../services/asta';
 import { PrenotaVisita } from '../../components/prenota-visita/prenota-visita';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ContattoService } from '../../services/contatto';
 import { AnnuncioDettaglio as AnnuncioDettaglioModel } from '../../models/annuncio-dettaglio';
-import { AnnuncioService } from '../../services/annuncio';
+import { AnnuncioService, ModificaAnnuncioRequest } from '../../services/annuncio';
 import { OffertaRiepilogo } from '../../models/offerta-riepilogo';
 import { OffertaService } from '../../services/offerta';
 import { Recensione } from '../../models/recensione';
@@ -44,6 +44,7 @@ contattoInviato = false;
 erroreContatto = '';
 
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private annuncioService = inject(AnnuncioService);
   private fotoService = inject(FotoService);
   private cdr = inject(ChangeDetectorRef);
@@ -71,6 +72,135 @@ erroreContatto = '';
 
   annuncio: AnnuncioDettaglioModel | null = null;
 
+  datiModifica: ModificaAnnuncioRequest = {
+    titolo: '', descrizione: '', superficieMq: 0,
+    indirizzo: '', citta: '', provincia: ''
+  };
+  nuovoPrezzo: number | null = null;
+  modificaInCorso = false;
+  ribassoInCorso = false;
+  chiusuraInCorso = false;
+  erroreGestione = '';
+  successoGestione = '';
+
+  get puoGestireAnnuncio(): boolean {
+    const utente = this.authService.utenteCorrente();
+    return !!(this.annuncio && utente && utente.ruolo === 'VENDITORE'
+      && utente.id === this.annuncio.venditoreId);
+  }
+
+  private riempiModifica(annuncio: AnnuncioDettaglioModel): void {
+    this.datiModifica = {
+      titolo: annuncio.titolo,
+      descrizione: annuncio.descrizione ?? '',
+      superficieMq: annuncio.superficieMq,
+      indirizzo: annuncio.indirizzo,
+      citta: annuncio.citta,
+      provincia: annuncio.provincia ?? ''
+    };
+  }
+
+  private ricaricaDettaglio(id: number): void {
+    this.annuncioService.getAnnuncioPerId(id).subscribe({
+      next: dati => {
+        this.annuncio = dati;
+        this.riempiModifica(dati);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.erroreGestione = 'Aggiornamento salvato, ma impossibile ricaricare i dettagli.';
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  modificaAnnuncio(): void {
+    if (!this.puoGestireAnnuncio || !this.annuncio || this.modificaInCorso) return;
+    const dati = {
+      ...this.datiModifica,
+      titolo: this.datiModifica.titolo.trim(),
+      descrizione: this.datiModifica.descrizione.trim(),
+      indirizzo: this.datiModifica.indirizzo.trim(),
+      citta: this.datiModifica.citta.trim()
+    };
+    if (!dati.titolo || !dati.descrizione || !dati.indirizzo || !dati.citta ||
+        !Number.isFinite(dati.superficieMq) || dati.superficieMq <= 0) {
+      this.erroreGestione = 'Compila correttamente tutti i campi obbligatori.';
+      return;
+    }
+    this.modificaInCorso = true;
+    this.erroreGestione = '';
+    this.successoGestione = '';
+    const id = this.annuncio.id;
+    this.annuncioService.modifica(id, dati).subscribe({
+      next: () => {
+        this.modificaInCorso = false;
+        this.successoGestione = 'Annuncio modificato correttamente.';
+        this.ricaricaDettaglio(id);
+        this.cdr.markForCheck();
+      },
+      error: err => {
+        this.modificaInCorso = false;
+        this.erroreGestione = this.messaggioErroreGestione(err.status);
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  ribassaPrezzo(): void {
+    if (!this.puoGestireAnnuncio || !this.annuncio || this.ribassoInCorso) return;
+    const prezzo = this.nuovoPrezzo;
+    if (prezzo === null || !Number.isFinite(prezzo) || prezzo <= 0 ||
+        prezzo >= this.annuncio.prezzo || prezzo > 9999999999.99 ||
+        Math.round(prezzo * 100) / 100 !== prezzo) {
+      this.erroreGestione = 'Il nuovo prezzo deve essere inferiore al prezzo attuale, con massimo due decimali.';
+      return;
+    }
+    this.ribassoInCorso = true;
+    this.erroreGestione = '';
+    this.successoGestione = '';
+    const id = this.annuncio.id;
+    this.annuncioService.ribassaPrezzo(id, prezzo).subscribe({
+      next: () => {
+        this.ribassoInCorso = false;
+        this.nuovoPrezzo = null;
+        this.successoGestione = 'Prezzo ribassato correttamente.';
+        this.ricaricaDettaglio(id);
+        this.cdr.markForCheck();
+      },
+      error: err => {
+        this.ribassoInCorso = false;
+        this.erroreGestione = this.messaggioErroreGestione(err.status);
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  chiudiAnnuncio(): void {
+    if (!this.puoGestireAnnuncio || !this.annuncio || this.chiusuraInCorso) return;
+    if (!window.confirm('Vuoi ritirare questo annuncio? Non sarà più visibile nel catalogo.')) return;
+    this.chiusuraInCorso = true;
+    this.erroreGestione = '';
+    this.successoGestione = '';
+    this.annuncioService.chiudi(this.annuncio.id).subscribe({
+      next: () => { void this.router.navigate(['/annunci']); },
+      error: err => {
+        this.chiusuraInCorso = false;
+        this.erroreGestione = this.messaggioErroreGestione(err.status);
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private messaggioErroreGestione(status: number): string {
+    if (status === 401 || status === 403) return 'Non sei autorizzato a gestire questo annuncio.';
+    if (status === 404) return 'Annuncio non trovato oppure non più attivo.';
+    if (status === 400) return 'Controlla i dati inseriti.';
+    if (status === 409) return 'Operazione non consentita: prezzo non valido oppure asta non terminata.';
+    return 'Operazione non riuscita. Verifica lo stato dell’annuncio prima di riprovare.';
+  }
+
+
   caricamento = true;
   errore = false;
 
@@ -93,6 +223,7 @@ erroreContatto = '';
     this.annuncioService.getAnnuncioPerId(id).subscribe({
       next: (dati) => {
         this.annuncio = dati;
+        this.riempiModifica(dati);
         this.caricamento = false;
         this.caricaFoto(id);
         this.caricaRecensioni(id);

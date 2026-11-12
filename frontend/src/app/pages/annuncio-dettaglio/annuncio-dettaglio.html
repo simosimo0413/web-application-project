@@ -156,6 +156,70 @@
 
       </div>
 
+      <!-- Gestione dell'annuncio: visibile soltanto al suo venditore. -->
+      @if (puoGestireAnnuncio) {
+        <section class="sezione-gestione" aria-labelledby="titolo-gestione">
+          <h2 id="titolo-gestione">Gestisci il tuo annuncio</h2>
+          <p>Modifica i dati, ribassa il prezzo oppure ritira l'annuncio.</p>
+
+          @if (successoGestione) {
+            <p class="gestione-successo" role="status">{{ successoGestione }}</p>
+          }
+          @if (erroreGestione) {
+            <p class="gestione-errore" role="alert">{{ erroreGestione }}</p>
+          }
+
+          <form #moduloModifica="ngForm" (ngSubmit)="modificaAnnuncio()" class="modulo-gestione">
+            <h3>Modifica i dati</h3>
+            <label for="edit-titolo">Titolo</label>
+            <input id="edit-titolo" name="editTitolo" [(ngModel)]="datiModifica.titolo"
+                   maxlength="200" required />
+            <label for="edit-descrizione">Descrizione</label>
+            <textarea id="edit-descrizione" name="editDescrizione"
+                      [(ngModel)]="datiModifica.descrizione" maxlength="10000"
+                      rows="4" required></textarea>
+            <label for="edit-superficie">Superficie (m²)</label>
+            <input id="edit-superficie" name="editSuperficie" type="number"
+                   [(ngModel)]="datiModifica.superficieMq" min="0.01"
+                   max="99999999.99" step="0.01" required />
+            <label for="edit-indirizzo">Indirizzo</label>
+            <input id="edit-indirizzo" name="editIndirizzo"
+                   [(ngModel)]="datiModifica.indirizzo" maxlength="255" required />
+            <label for="edit-citta">Città</label>
+            <input id="edit-citta" name="editCitta"
+                   [(ngModel)]="datiModifica.citta" maxlength="120" required />
+            <label for="edit-provincia">Provincia</label>
+            <input id="edit-provincia" name="editProvincia"
+                   [(ngModel)]="datiModifica.provincia" maxlength="100" />
+            <button type="submit" [disabled]="moduloModifica.invalid || modificaInCorso || ribassoInCorso || chiusuraInCorso">
+              {{ modificaInCorso ? 'Salvataggio...' : 'Salva modifiche' }}
+            </button>
+          </form>
+
+          <form #moduloRibasso="ngForm" (ngSubmit)="ribassaPrezzo()" class="modulo-gestione">
+            <h3>Ribassa il prezzo</h3>
+            <p>Prezzo attuale: {{ immobile.prezzo | currency:'EUR':'symbol':'1.2-2':'it' }}</p>
+            <label for="edit-prezzo">Nuovo prezzo (€)</label>
+            <input id="edit-prezzo" name="editPrezzo" type="number"
+                   [(ngModel)]="nuovoPrezzo" min="0.01" max="9999999999.99"
+                   step="0.01" required />
+            <button type="submit" [disabled]="moduloRibasso.invalid || ribassoInCorso || modificaInCorso || chiusuraInCorso">
+              {{ ribassoInCorso ? 'Aggiornamento...' : 'Applica ribasso' }}
+            </button>
+          </form>
+
+          <div class="gestione-chiusura">
+            <h3>Ritira l'annuncio</h3>
+            <p>Il ritiro è reversibile solo con una futura funzione di riattivazione. Le visite e le offerte restano nel database. Non si può ritirare durante un'asta non terminata.</p>
+            <button type="button" class="pulsante-chiudi"
+                    (click)="chiudiAnnuncio()"
+                    [disabled]="chiusuraInCorso || modificaInCorso || ribassoInCorso">
+              {{ chiusuraInCorso ? 'Ritiro in corso...' : 'Ritira annuncio' }}
+            </button>
+          </div>
+        </section>
+      }
+
       <!-- Asta associata all'immobile -->
       @if (caricamentoAsta) {
 
