@@ -156,6 +156,15 @@
 
       </div>
 
+      <!-- Posizione su Google Maps: coordinate se disponibili, altrimenti indirizzo. -->
+      <app-mappa-immobile
+        [indirizzo]="immobile.indirizzo"
+        [citta]="immobile.citta"
+        [provincia]="immobile.provincia"
+        [latitudine]="immobile.latitudine"
+        [longitudine]="immobile.longitudine">
+      </app-mappa-immobile>
+
       <!-- Gestione dell'annuncio: visibile soltanto al suo venditore. -->
       @if (puoGestireAnnuncio) {
         <section class="sezione-gestione" aria-labelledby="titolo-gestione">

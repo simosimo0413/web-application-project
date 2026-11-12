@@ -1,0 +1,49 @@
+<section class="sezione-mappa" aria-labelledby="titolo-mappa">
+  <h2 id="titolo-mappa">Posizione dell'immobile</h2>
+
+  @if (urlGoogleMaps) {
+    @if (mappaIncorporata) {
+      <iframe
+        class="mappa-iframe"
+        [src]="mappaIncorporata"
+        title="Mappa interattiva dell'immobile tramite OpenStreetMap"
+        loading="lazy"
+        referrerpolicy="strict-origin-when-cross-origin">
+      </iframe>
+      <p class="mappa-nota">
+        @if (usaCoordinate) {
+          Mappa basata sulle coordinate dell'annuncio. Verifica sempre la posizione prima della visita.
+        } @else {
+          Posizione indicativa della citta, non dell'indirizzo esatto dell'immobile.
+        }
+        Dati cartografici &copy; OpenStreetMap contributors.
+      </p>
+    } @else {
+      <p class="mappa-avviso">
+        Puoi visualizzare una mappa gratuita e interattiva direttamente qui.
+      </p>
+      <button type="button" class="mappa-carica" (click)="mostraMappa()" [disabled]="caricamentoMappa">
+        {{ caricamentoMappa ? 'Caricamento mappa...' : 'Mostra mappa gratuita' }}
+      </button>
+      @if (erroreMappa) {
+        <p class="mappa-errore" role="status">{{ erroreMappa }}</p>
+      }
+    }
+
+    <div class="mappa-azioni">
+      <a [href]="urlGoogleMaps" target="_blank" rel="noopener noreferrer">
+        Apri su Google Maps
+      </a>
+      <a [href]="urlIndicazioni" target="_blank" rel="noopener noreferrer">
+        Indicazioni stradali
+      </a>
+    </div>
+    @if (!usaCoordinate) {
+      <p class="mappa-nota">
+        L'indirizzo esatto viene cercato tramite Google Maps. La mappa gratuita mostra soltanto la localita.
+      </p>
+    }
+  } @else {
+    <p class="mappa-avviso">Posizione non disponibile per questo annuncio.</p>
+  }
+</section>

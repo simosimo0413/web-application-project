@@ -13,5 +13,7 @@ export interface AnnuncioDettaglio {
   tipoContratto: 'VENDITA' | 'AFFITTO';
   fotoPrincipale: string | null;
   venditoreId: number;
+  latitudine: number | null;
+  longitudine: number | null;
 }
 

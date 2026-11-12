@@ -21,11 +21,12 @@ import { Recensione } from '../../models/recensione';
 import { RecensioneService } from '../../services/recensione';
 import { FotoService, Foto } from '../../services/foto';
 import { AuthService } from '../../services/auth';
+import { MappaImmobile } from '../../components/mappa-immobile/mappa-immobile';
 
 @Component({
   selector: 'app-annuncio-dettaglio',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule,PrenotaVisita],
+  imports: [CommonModule, RouterLink, FormsModule, PrenotaVisita, MappaImmobile],
   templateUrl: './annuncio-dettaglio.html',
   styleUrl: './annuncio-dettaglio.css'
 })

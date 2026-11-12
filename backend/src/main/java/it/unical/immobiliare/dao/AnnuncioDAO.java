@@ -116,6 +116,8 @@ public class AnnuncioDAO implements AnnuncioLetturaDAO {
                 i.indirizzo,
                 i.citta,
                 i.provincia,
+                i.latitudine,
+                i.longitudine,
                 c.nome AS categoria,
                 a.tipo_contratto,
                 f.url AS foto_principale
@@ -145,7 +147,9 @@ public class AnnuncioDAO implements AnnuncioLetturaDAO {
                     rs.getString("categoria"),
                     rs.getString("tipo_contratto"),
                     rs.getString("foto_principale"),
-                    rs.getLong("venditore_id")
+                    rs.getLong("venditore_id"),
+                    rs.getBigDecimal("latitudine"),
+                    rs.getBigDecimal("longitudine")
                 ),
                 id
             );

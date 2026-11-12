@@ -16,6 +16,8 @@ public record AnnuncioDettaglioDTO(
     String categoria,
     String tipoContratto,
     String fotoPrincipale,
-    Long venditoreId
+    Long venditoreId,
+    BigDecimal latitudine,
+    BigDecimal longitudine
 ) {
 }
