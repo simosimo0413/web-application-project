@@ -1,0 +1,90 @@
+<main class="admin-page">
+  <header>
+    <h1>Amministrazione</h1>
+    <p>Gestisci utenti e annunci del portale. Le modifiche sono controllate anche nel backend.</p>
+  </header>
+
+  @if (conferma) {
+    <p class="successo" role="status">{{ conferma }}</p>
+  }
+
+  <section aria-labelledby="utenti-titolo">
+    <div class="intestazione">
+      <h2 id="utenti-titolo">Utenti</h2>
+      <button type="button" (click)="caricaUtenti()" [disabled]="inCorso !== null">Aggiorna</button>
+    </div>
+    @if (caricamentoUtenti) {
+      <p>Caricamento utenti...</p>
+    } @else if (erroreUtenti) {
+      <p class="errore" role="alert">{{ erroreUtenti }}</p>
+    } @else if (utenti.length === 0) {
+      <p>Nessun utente presente.</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nome</th><th>Email</th><th>Ruolo</th><th>Stato</th><th>Azioni</th></tr></thead>
+          <tbody>
+            @for (u of utenti; track u.id) {
+              <tr>
+                <td>{{ u.nome }} {{ u.cognome }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.ruolo }}</td>
+                <td>{{ u.bannato ? 'Bannato' : 'Attivo' }}</td>
+                <td class="actions">
+                  @if (u.ruolo !== 'ADMIN') {
+                    <button type="button" [disabled]="inCorso !== null" (click)="cambiaBan(u)">
+                      {{ u.bannato ? 'Riattiva' : 'Banna' }}
+                    </button>
+                    @if (!u.bannato) {
+                      <button type="button" [disabled]="inCorso !== null" (click)="promuovi(u)">Nomina admin</button>
+                    }
+                  } @else {
+                    <span>Account admin protetto</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <section aria-labelledby="annunci-titolo">
+    <div class="intestazione">
+      <h2 id="annunci-titolo">Tutti gli annunci</h2>
+      <button type="button" (click)="caricaAnnunci()" [disabled]="inCorso !== null">Aggiorna</button>
+    </div>
+    @if (caricamentoAnnunci) {
+      <p>Caricamento annunci...</p>
+    } @else if (erroreAnnunci) {
+      <p class="errore" role="alert">{{ erroreAnnunci }}</p>
+    } @else if (annunci.length === 0) {
+      <p>Nessun annuncio presente.</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Annuncio</th><th>Venditore</th><th>Prezzo</th><th>Stato</th><th>Azioni</th></tr></thead>
+          <tbody>
+            @for (a of annunci; track a.id) {
+              <tr>
+                <td>#{{ a.id }} · {{ a.titolo }}</td>
+                <td>{{ a.venditoreEmail }}</td>
+                <td>{{ a.prezzo | currency:'EUR':'symbol':'1.2-2':'it' }}</td>
+                <td>{{ a.stato }}</td>
+                <td class="actions">
+                  @if (a.stato === 'ATTIVO') {
+                    <a [routerLink]="['/annunci', a.id]">Modifica</a>
+                    <button type="button" [disabled]="inCorso !== null" (click)="chiudi(a)">Ritira</button>
+                  } @else {
+                    <span>Non attivo</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

@@ -32,6 +32,7 @@ export const routes: Routes = [
       .then(m => m.MessaggiRicevuti)
 },
 
+  { path: 'amministrazione', loadComponent: () => import('./pages/amministrazione/amministrazione').then(m => m.Amministrazione) },
   { path: 'registrazione', component: Registrazione },
   { path: 'login', component: Login },
   { path: 'pubblica-annuncio', component: PubblicaAnnuncio },

@@ -85,8 +85,8 @@ erroreContatto = '';
 
   get puoGestireAnnuncio(): boolean {
     const utente = this.authService.utenteCorrente();
-    return !!(this.annuncio && utente && utente.ruolo === 'VENDITORE'
-      && utente.id === this.annuncio.venditoreId);
+    return !!(this.annuncio && utente && (utente.ruolo === 'ADMIN' ||
+      (utente.ruolo === 'VENDITORE' && utente.id === this.annuncio.venditoreId)));
   }
 
   private riempiModifica(annuncio: AnnuncioDettaglioModel): void {

@@ -30,34 +30,38 @@ public class GestioneAnnuncioService {
         this.utenteDAO = utenteDAO;
     }
 
-    private String venditoreAutorizzato(Authentication auth) {
-        if (auth == null || !auth.isAuthenticated()
-                || "anonymousUser".equals(auth.getName())
-                || auth.getAuthorities().stream().noneMatch(a ->
-                        "ROLE_VENDITORE".equals(a.getAuthority()))) {
-            throw new AccessDeniedException("Accesso riservato ai venditori");
-        }
-        Utente utente = utenteDAO.trovaPerEmail(auth.getName())
-                .orElseThrow(() -> new AccessDeniedException("Utente non trovato"));
-        if (utente.isBannato() || !"VENDITORE".equals(utente.getRuolo())) {
-            throw new AccessDeniedException("Venditore non autorizzato");
-        }
-        return utente.getEmail();
-    }
-
-    private AnnuncioDAO.AnnuncioGestibile bloccaProprioAnnuncio(Long id, Authentication auth) {
+    /** L'amministratore puo gestire tutti gli annunci, il venditore solo i propri. */
+    private AnnuncioDAO.AnnuncioGestibile bloccaAnnuncioGestibile(Long id, Authentication auth) {
         if (id == null || id <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID annuncio non valido");
         }
-        String email = venditoreAutorizzato(auth);
-        return annuncioDAO.bloccaAttivoSeProprietario(id, email)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Annuncio attivo non trovato"));
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new AccessDeniedException("Devi effettuare l'accesso");
+        }
+        Utente utente = utenteDAO.trovaPerEmail(auth.getName())
+                .orElseThrow(() -> new AccessDeniedException("Utente non trovato"));
+        String ruolo = utente.getRuolo();
+        boolean ruoloValido = auth.getAuthorities().stream()
+                .anyMatch(a -> ("ROLE_" + ruolo).equals(a.getAuthority()));
+        if (utente.isBannato() || !ruoloValido) {
+            throw new AccessDeniedException("Sessione non autorizzata");
+        }
+        if ("ADMIN".equals(ruolo)) {
+            return annuncioDAO.bloccaAttivoPerId(id)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Annuncio attivo non trovato"));
+        }
+        if ("VENDITORE".equals(ruolo)) {
+            return annuncioDAO.bloccaAttivoSeProprietario(id, utente.getEmail())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Annuncio attivo non trovato"));
+        }
+        throw new AccessDeniedException("Accesso riservato ad amministratori e venditori");
     }
 
     @Transactional
     public void modifica(Long id, ModificaAnnuncioRequest dati, Authentication auth) {
-        AnnuncioDAO.AnnuncioGestibile annuncio = bloccaProprioAnnuncio(id, auth);
+        AnnuncioDAO.AnnuncioGestibile annuncio = bloccaAnnuncioGestibile(id, auth);
         if (dati.superficieMq().scale() > 2) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Massimo due decimali per la superficie");
         }
@@ -67,7 +71,7 @@ public class GestioneAnnuncioService {
 
     @Transactional
     public void ribassa(Long id, RibassoPrezzoRequest dati, Authentication auth) {
-        AnnuncioDAO.AnnuncioGestibile annuncio = bloccaProprioAnnuncio(id, auth);
+        AnnuncioDAO.AnnuncioGestibile annuncio = bloccaAnnuncioGestibile(id, auth);
         BigDecimal prezzo = dati.nuovoPrezzo();
         if (prezzo.scale() > 2) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Massimo due decimali");
@@ -85,7 +89,7 @@ public class GestioneAnnuncioService {
 
     @Transactional
     public void chiudi(Long id, Authentication auth) {
-        bloccaProprioAnnuncio(id, auth);
+        bloccaAnnuncioGestibile(id, auth);
         if (annuncioDAO.haAstaNonTerminata(id)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Non puoi chiudere un annuncio con un'asta non terminata");

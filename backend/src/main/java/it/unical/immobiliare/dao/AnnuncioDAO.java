@@ -220,6 +220,17 @@ public class AnnuncioDAO implements AnnuncioLetturaDAO {
                 annuncioId, email).stream().findFirst();
     }
 
+    /** Un amministratore puo bloccare e gestire qualsiasi annuncio attivo. */
+    public Optional<AnnuncioGestibile> bloccaAttivoPerId(Long annuncioId) {
+        return jdbcTemplate.query("""
+                SELECT immobile_id, prezzo FROM annunci
+                WHERE id = ? AND stato = 'ATTIVO'
+                FOR UPDATE
+                """, (rs, n) -> new AnnuncioGestibile(
+                rs.getLong("immobile_id"), rs.getBigDecimal("prezzo")), annuncioId)
+                .stream().findFirst();
+    }
+
     public void aggiornaTitolo(Long annuncioId, String titolo) {
         jdbcTemplate.update("UPDATE annunci SET titolo = ? WHERE id = ?", titolo, annuncioId);
     }
