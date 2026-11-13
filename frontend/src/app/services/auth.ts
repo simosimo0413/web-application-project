@@ -1,7 +1,7 @@
 
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, switchMap, tap } from 'rxjs';
+import { Observable, catchError, switchMap, tap, throwError } from 'rxjs';
 
 export interface RegistrazioneRequest {
   nome: string;
@@ -94,6 +94,12 @@ export class AuthService {
         ruolo: sessione.ruolo.replace(/^ROLE_/, '')
       });
 
+      }),
+      catchError(errore => {
+        if (errore.status === 401 || errore.status === 403) {
+          this.utenteSignal.set(null);
+        }
+        return throwError(() => errore);
       })
     );
   }
