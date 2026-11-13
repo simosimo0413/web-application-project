@@ -18,6 +18,7 @@ export class Annunci implements OnInit {
 
   private annuncioService = inject(AnnuncioService);
   private cdr = inject(ChangeDetectorRef);
+  private numeroRicerca = 0;
 
   annunci: Annuncio[] = [];
 
@@ -38,16 +39,19 @@ export class Annunci implements OnInit {
 
 
 caricaAnnunci(): void {
+  const ricercaAttuale = ++this.numeroRicerca;
   this.caricamento = true;
   this.errore = false;
 
   this.annuncioService.getAnnunci(this.filtri).subscribe({
     next: (dati) => {
+      if (ricercaAttuale !== this.numeroRicerca) return;
       this.annunci = dati;
       this.caricamento = false;
       this.cdr.markForCheck();
     },
     error: (err) => {
+      if (ricercaAttuale !== this.numeroRicerca) return;
       console.error('Errore caricamento annunci:', err);
       this.errore = true;
       this.caricamento = false;
