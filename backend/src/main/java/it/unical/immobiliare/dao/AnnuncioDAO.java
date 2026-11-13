@@ -1,6 +1,7 @@
 package it.unical.immobiliare.dao;
 
 import it.unical.immobiliare.dto.AnnuncioCardDTO;
+import it.unical.immobiliare.dto.OrdinamentoAnnunci;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import java.util.Optional;
 
 @Repository
-public class AnnuncioDAO {
+public class AnnuncioDAO implements AnnuncioLetturaDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -22,15 +23,18 @@ public class AnnuncioDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public List<AnnuncioCardDTO> trovaAnnunciAttivi(
             String citta,
             BigDecimal prezzoMax,
             String categoria,
-            String tipoContratto) {
+            String tipoContratto,
+            OrdinamentoAnnunci ordinamento) {
 
         StringBuilder sql = new StringBuilder("""
             SELECT
                 a.id,
+                a.venditore_id,
                 a.titolo,
                 a.prezzo,
                 a.prezzo_precedente,
@@ -70,7 +74,15 @@ public class AnnuncioDAO {
             parametri.add(tipoContratto.trim().toUpperCase());
         }
 
-        sql.append(" ORDER BY a.data_pubblicazione DESC, a.id DESC");
+        // Ordinamento consentito solo attraverso valori enumerati.
+        String orderBy = switch (ordinamento) {
+            case PREZZO_ASC -> "a.prezzo ASC, a.id DESC";
+            case PREZZO_DESC -> "a.prezzo DESC, a.id DESC";
+            case SUPERFICIE_ASC -> "i.superficie_mq ASC, a.id DESC";
+            case SUPERFICIE_DESC -> "i.superficie_mq DESC, a.id DESC";
+            case RECENTI -> "a.data_pubblicazione DESC, a.id DESC";
+        };
+        sql.append(" ORDER BY ").append(orderBy);
 
         return jdbcTemplate.query(
             sql.toString(),
@@ -89,11 +101,13 @@ public class AnnuncioDAO {
         );
     }
     
+    @Override
     public Optional<AnnuncioDettaglioDTO> trovaAnnuncioPerId(Long id) {
 
         String sql = """
             SELECT
                 a.id,
+                a.venditore_id,
                 a.titolo,
                 i.descrizione,
                 a.prezzo,
@@ -102,6 +116,8 @@ public class AnnuncioDAO {
                 i.indirizzo,
                 i.citta,
                 i.provincia,
+                i.latitudine,
+                i.longitudine,
                 c.nome AS categoria,
                 a.tipo_contratto,
                 f.url AS foto_principale
@@ -130,7 +146,10 @@ public class AnnuncioDAO {
                     rs.getString("provincia"),
                     rs.getString("categoria"),
                     rs.getString("tipo_contratto"),
-                    rs.getString("foto_principale")
+                    rs.getString("foto_principale"),
+                    rs.getLong("venditore_id"),
+                    rs.getBigDecimal("latitudine"),
+                    rs.getBigDecimal("longitudine")
                 ),
                 id
             );
@@ -178,6 +197,7 @@ public class AnnuncioDAO {
         JOIN utenti u ON a.venditore_id = u.id
         WHERE a.id = ?
         AND u.email = ?
+        AND a.stato = 'ATTIVO'
         """;
 
     return jdbcTemplate.query(
@@ -187,4 +207,60 @@ public class AnnuncioDAO {
         emailVenditore
     ).stream().findFirst();
 }
+
+    public record AnnuncioGestibile(Long immobileId, BigDecimal prezzo) {}
+
+    /** Blocca l'annuncio durante un'operazione del proprietario, evitando ribassi concorrenti. */
+    public Optional<AnnuncioGestibile> bloccaAttivoSeProprietario(Long annuncioId, String email) {
+        String sql = """
+                SELECT a.immobile_id, a.prezzo
+                FROM annunci a
+                JOIN utenti u ON u.id = a.venditore_id
+                WHERE a.id = ? AND LOWER(u.email) = LOWER(?) AND a.stato = 'ATTIVO'
+                FOR UPDATE OF a
+                """;
+        return jdbcTemplate.query(sql,
+                (rs, n) -> new AnnuncioGestibile(
+                        rs.getLong("immobile_id"), rs.getBigDecimal("prezzo")),
+                annuncioId, email).stream().findFirst();
+    }
+
+    /** Un amministratore puo bloccare e gestire qualsiasi annuncio attivo. */
+    public Optional<AnnuncioGestibile> bloccaAttivoPerId(Long annuncioId) {
+        return jdbcTemplate.query("""
+                SELECT immobile_id, prezzo FROM annunci
+                WHERE id = ? AND stato = 'ATTIVO'
+                FOR UPDATE
+                """, (rs, n) -> new AnnuncioGestibile(
+                rs.getLong("immobile_id"), rs.getBigDecimal("prezzo")), annuncioId)
+                .stream().findFirst();
+    }
+
+    public void aggiornaTitolo(Long annuncioId, String titolo) {
+        jdbcTemplate.update("UPDATE annunci SET titolo = ? WHERE id = ?", titolo, annuncioId);
+    }
+
+    public void ribassaPrezzo(Long annuncioId, BigDecimal nuovoPrezzo) {
+        jdbcTemplate.update("""
+                UPDATE annunci
+                SET prezzo_precedente = prezzo, prezzo = ?
+                WHERE id = ? AND stato = 'ATTIVO'
+                """, nuovoPrezzo, annuncioId);
+    }
+
+    /** Non chiudere un annuncio che ha un'asta programmata o in corso. */
+    public boolean haAstaNonTerminata(Long annuncioId) {
+        Boolean esiste = jdbcTemplate.queryForObject("""
+                SELECT EXISTS (
+                    SELECT 1 FROM aste
+                    WHERE annuncio_id = ? AND fine > CURRENT_TIMESTAMP
+                )
+                """, Boolean.class, annuncioId);
+        return Boolean.TRUE.equals(esiste);
+    }
+
+    public void chiudiAnnuncio(Long annuncioId) {
+        jdbcTemplate.update("UPDATE annunci SET stato = 'CHIUSO' WHERE id = ? AND stato = 'ATTIVO'", annuncioId);
+    }
+
 }

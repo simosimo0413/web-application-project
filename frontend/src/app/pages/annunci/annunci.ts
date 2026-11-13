@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { Annuncio } from '../../models/annuncio';
-import { AnnuncioService } from '../../services/annuncio';
+import { AnnuncioService, FiltriAnnunci } from '../../services/annuncio';
 import { ImmobileCard } from '../../components/immobile-card/immobile-card';
 
 @Component({
@@ -18,14 +18,16 @@ export class Annunci implements OnInit {
 
   private annuncioService = inject(AnnuncioService);
   private cdr = inject(ChangeDetectorRef);
+  private numeroRicerca = 0;
 
   annunci: Annuncio[] = [];
 
-  filtri = {
+  filtri: FiltriAnnunci = {
     citta: '',
     prezzoMax: null as number | null,
     categoria: '',
-    tipoContratto: ''
+    tipoContratto: '',
+    ordinamento: 'RECENTI'
   };
 
   caricamento = true;
@@ -37,16 +39,19 @@ export class Annunci implements OnInit {
 
 
 caricaAnnunci(): void {
+  const ricercaAttuale = ++this.numeroRicerca;
   this.caricamento = true;
   this.errore = false;
 
   this.annuncioService.getAnnunci(this.filtri).subscribe({
     next: (dati) => {
+      if (ricercaAttuale !== this.numeroRicerca) return;
       this.annunci = dati;
       this.caricamento = false;
       this.cdr.markForCheck();
     },
     error: (err) => {
+      if (ricercaAttuale !== this.numeroRicerca) return;
       console.error('Errore caricamento annunci:', err);
       this.errore = true;
       this.caricamento = false;

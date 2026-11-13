@@ -1,7 +1,7 @@
 
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, switchMap, tap } from 'rxjs';
+import { Observable, catchError, switchMap, tap, throwError } from 'rxjs';
 
 export interface RegistrazioneRequest {
   nome: string;
@@ -28,16 +28,20 @@ export interface LoginResponse {
   messaggio: string;
 }
 
+
 export interface SessioneResponse {
+  id: number;
   email: string;
   ruolo: string;
 }
 
 export interface UtenteAutenticato {
+  id: number;
   nome?: string;
   email?: string;
   ruolo: string;
 }
+
 
 @Injectable({
   providedIn: 'root'
@@ -70,10 +74,13 @@ export class AuthService {
         )
       ),
       tap(risposta => {
-        this.utenteSignal.set({
-          nome: risposta.nome,
-          ruolo: risposta.ruolo
-        });
+        
+      this.utenteSignal.set({
+        id: risposta.id,
+        nome: risposta.nome,
+        ruolo: risposta.ruolo
+      });
+
       })
     );
   }
@@ -81,10 +88,18 @@ export class AuthService {
   ripristinaSessione(): Observable<SessioneResponse> {
     return this.http.get<SessioneResponse>('/api/auth/me').pipe(
       tap(sessione => {
-        this.utenteSignal.set({
-          email: sessione.email,
-          ruolo: sessione.ruolo.replace(/^ROLE_/, '')
-        });
+      this.utenteSignal.set({
+        id: sessione.id,
+        email: sessione.email,
+        ruolo: sessione.ruolo.replace(/^ROLE_/, '')
+      });
+
+      }),
+      catchError(errore => {
+        if (errore.status === 401 || errore.status === 403) {
+          this.utenteSignal.set(null);
+        }
+        return throwError(() => errore);
       })
     );
   }

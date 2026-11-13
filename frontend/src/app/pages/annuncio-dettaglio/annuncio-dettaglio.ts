@@ -10,22 +10,24 @@ import { Asta } from '../../models/asta';
 import { AstaService } from '../../services/asta';
 import { PrenotaVisita } from '../../components/prenota-visita/prenota-visita';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ContattoService } from '../../services/contatto';
 import { AnnuncioDettaglio as AnnuncioDettaglioModel } from '../../models/annuncio-dettaglio';
-import { AnnuncioService } from '../../services/annuncio';
+import { AnnuncioService, ModificaAnnuncioRequest } from '../../services/annuncio';
 import { OffertaRiepilogo } from '../../models/offerta-riepilogo';
 import { OffertaService } from '../../services/offerta';
 import { Recensione } from '../../models/recensione';
 import { RecensioneService } from '../../services/recensione';
 import { FotoService, Foto } from '../../services/foto';
 import { AuthService } from '../../services/auth';
+import { MappaImmobile } from '../../components/mappa-immobile/mappa-immobile';
+import { FacebookPromozione } from '../../components/facebook-promozione/facebook-promozione';
 
 @Component({
   selector: 'app-annuncio-dettaglio',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule,PrenotaVisita],
+  imports: [CommonModule, RouterLink, FormsModule, PrenotaVisita, MappaImmobile, FacebookPromozione],
   templateUrl: './annuncio-dettaglio.html',
   styleUrl: './annuncio-dettaglio.css'
 })
@@ -44,12 +46,22 @@ contattoInviato = false;
 erroreContatto = '';
 
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private annuncioService = inject(AnnuncioService);
   private fotoService = inject(FotoService);
   private cdr = inject(ChangeDetectorRef);
   asta: Asta | null = null;
   caricamentoAsta = false;
   erroreAsta = false;
+
+  prezzoBaseNuovaAsta: number | null = null;
+  inizioNuovaAsta = '';
+  fineNuovaAsta = '';
+
+  creazioneAstaInCorso = false;
+  astaCreata = false;
+  erroreCreazioneAsta = '';
+
   riepilogoOfferte: OffertaRiepilogo | null = null;
   caricamentoRiepilogo = false;
   erroreRiepilogo = false;
@@ -61,6 +73,135 @@ erroreContatto = '';
 
 
   annuncio: AnnuncioDettaglioModel | null = null;
+
+  datiModifica: ModificaAnnuncioRequest = {
+    titolo: '', descrizione: '', superficieMq: 0,
+    indirizzo: '', citta: '', provincia: ''
+  };
+  nuovoPrezzo: number | null = null;
+  modificaInCorso = false;
+  ribassoInCorso = false;
+  chiusuraInCorso = false;
+  erroreGestione = '';
+  successoGestione = '';
+
+  get puoGestireAnnuncio(): boolean {
+    const utente = this.authService.utenteCorrente();
+    return !!(this.annuncio && utente && (utente.ruolo === 'ADMIN' ||
+      (utente.ruolo === 'VENDITORE' && utente.id === this.annuncio.venditoreId)));
+  }
+
+  private riempiModifica(annuncio: AnnuncioDettaglioModel): void {
+    this.datiModifica = {
+      titolo: annuncio.titolo,
+      descrizione: annuncio.descrizione ?? '',
+      superficieMq: annuncio.superficieMq,
+      indirizzo: annuncio.indirizzo,
+      citta: annuncio.citta,
+      provincia: annuncio.provincia ?? ''
+    };
+  }
+
+  private ricaricaDettaglio(id: number): void {
+    this.annuncioService.getAnnuncioPerId(id).subscribe({
+      next: dati => {
+        this.annuncio = dati;
+        this.riempiModifica(dati);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.erroreGestione = 'Aggiornamento salvato, ma impossibile ricaricare i dettagli.';
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  modificaAnnuncio(): void {
+    if (!this.puoGestireAnnuncio || !this.annuncio || this.modificaInCorso) return;
+    const dati = {
+      ...this.datiModifica,
+      titolo: this.datiModifica.titolo.trim(),
+      descrizione: this.datiModifica.descrizione.trim(),
+      indirizzo: this.datiModifica.indirizzo.trim(),
+      citta: this.datiModifica.citta.trim()
+    };
+    if (!dati.titolo || !dati.descrizione || !dati.indirizzo || !dati.citta ||
+        !Number.isFinite(dati.superficieMq) || dati.superficieMq <= 0) {
+      this.erroreGestione = 'Compila correttamente tutti i campi obbligatori.';
+      return;
+    }
+    this.modificaInCorso = true;
+    this.erroreGestione = '';
+    this.successoGestione = '';
+    const id = this.annuncio.id;
+    this.annuncioService.modifica(id, dati).subscribe({
+      next: () => {
+        this.modificaInCorso = false;
+        this.successoGestione = 'Annuncio modificato correttamente.';
+        this.ricaricaDettaglio(id);
+        this.cdr.markForCheck();
+      },
+      error: err => {
+        this.modificaInCorso = false;
+        this.erroreGestione = this.messaggioErroreGestione(err.status);
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  ribassaPrezzo(): void {
+    if (!this.puoGestireAnnuncio || !this.annuncio || this.ribassoInCorso) return;
+    const prezzo = this.nuovoPrezzo;
+    if (prezzo === null || !Number.isFinite(prezzo) || prezzo <= 0 ||
+        prezzo >= this.annuncio.prezzo || prezzo > 9999999999.99 ||
+        Math.round(prezzo * 100) / 100 !== prezzo) {
+      this.erroreGestione = 'Il nuovo prezzo deve essere inferiore al prezzo attuale, con massimo due decimali.';
+      return;
+    }
+    this.ribassoInCorso = true;
+    this.erroreGestione = '';
+    this.successoGestione = '';
+    const id = this.annuncio.id;
+    this.annuncioService.ribassaPrezzo(id, prezzo).subscribe({
+      next: () => {
+        this.ribassoInCorso = false;
+        this.nuovoPrezzo = null;
+        this.successoGestione = 'Prezzo ribassato correttamente.';
+        this.ricaricaDettaglio(id);
+        this.cdr.markForCheck();
+      },
+      error: err => {
+        this.ribassoInCorso = false;
+        this.erroreGestione = this.messaggioErroreGestione(err.status);
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  chiudiAnnuncio(): void {
+    if (!this.puoGestireAnnuncio || !this.annuncio || this.chiusuraInCorso) return;
+    if (!window.confirm('Vuoi ritirare questo annuncio? Non sarà più visibile nel catalogo.')) return;
+    this.chiusuraInCorso = true;
+    this.erroreGestione = '';
+    this.successoGestione = '';
+    this.annuncioService.chiudi(this.annuncio.id).subscribe({
+      next: () => { void this.router.navigate(['/annunci']); },
+      error: err => {
+        this.chiusuraInCorso = false;
+        this.erroreGestione = this.messaggioErroreGestione(err.status);
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private messaggioErroreGestione(status: number): string {
+    if (status === 401 || status === 403) return 'Non sei autorizzato a gestire questo annuncio.';
+    if (status === 404) return 'Annuncio non trovato oppure non più attivo.';
+    if (status === 400) return 'Controlla i dati inseriti.';
+    if (status === 409) return 'Operazione non consentita: prezzo non valido oppure asta non terminata.';
+    return 'Operazione non riuscita. Verifica lo stato dell’annuncio prima di riprovare.';
+  }
+
 
   caricamento = true;
   errore = false;
@@ -84,6 +225,7 @@ erroreContatto = '';
     this.annuncioService.getAnnuncioPerId(id).subscribe({
       next: (dati) => {
         this.annuncio = dati;
+        this.riempiModifica(dati);
         this.caricamento = false;
         this.caricaFoto(id);
         this.caricaRecensioni(id);
@@ -205,6 +347,20 @@ private caricaRiepilogoOfferte(astaId: number): void {
 }
 
 
+get puoCreareAsta(): boolean {
+  const utente = this.authService.utenteCorrente();
+
+  return (
+    utente?.ruolo === 'VENDITORE' &&
+    this.annuncio !== null &&
+    utente.id === this.annuncio.venditoreId &&
+    this.annuncio.tipoContratto === 'VENDITA' &&
+    !this.caricamentoAsta &&
+    !this.erroreAsta &&
+    this.asta === null
+  );
+}
+
 get puoPresentareOfferta(): boolean {
   const utente = this.authService.utenteCorrente();
 
@@ -214,6 +370,127 @@ get puoPresentareOfferta(): boolean {
   );
 }
 
+
+creaAsta(): void {
+
+  // 1. Verifica che il venditore possa creare l'asta.
+  if (
+    !this.puoCreareAsta ||
+    !this.annuncio ||
+    this.creazioneAstaInCorso
+  ) {
+    return;
+  }
+
+  this.erroreCreazioneAsta = '';
+  this.astaCreata = false;
+
+  const prezzoBase = this.prezzoBaseNuovaAsta;
+
+  // 2. Controlla il prezzo base.
+  if (
+    prezzoBase === null ||
+    !Number.isFinite(prezzoBase) ||
+    prezzoBase <= 0 ||
+    prezzoBase > 9999999999.99 ||
+    Math.round(prezzoBase * 100) / 100 !== prezzoBase
+  ) {
+    this.erroreCreazioneAsta =
+      'Inserisci un prezzo base valido, con massimo due decimali.';
+    return;
+  }
+
+  // 3. Controlla che entrambe le date siano presenti.
+  if (!this.inizioNuovaAsta || !this.fineNuovaAsta) {
+    this.erroreCreazioneAsta =
+      'Inserisci la data di inizio e quella di scadenza.';
+    return;
+  }
+
+  const inizio = new Date(this.inizioNuovaAsta);
+  const fine = new Date(this.fineNuovaAsta);
+
+  // 4. Controlla che le date siano valide.
+  if (
+    !Number.isFinite(inizio.getTime()) ||
+    !Number.isFinite(fine.getTime())
+  ) {
+    this.erroreCreazioneAsta =
+      'Le date inserite non sono valide.';
+    return;
+  }
+
+  // 5. L'asta deve iniziare nel futuro.
+  if (inizio.getTime() <= Date.now()) {
+    this.erroreCreazioneAsta =
+      'La data di inizio deve essere futura.';
+    return;
+  }
+
+  // 6. La scadenza deve essere successiva all'inizio.
+  if (fine.getTime() <= inizio.getTime()) {
+    this.erroreCreazioneAsta =
+      'La scadenza deve essere successiva alla data di inizio.';
+    return;
+  }
+
+  const annuncioId = this.annuncio.id;
+
+  // 7. Invia la richiesta al backend.
+  this.creazioneAstaInCorso = true;
+
+  this.astaService.creaPerAnnuncio(
+    annuncioId,
+    {
+      prezzoBase,
+      inizio: inizio.toISOString(),
+      fine: fine.toISOString()
+    }
+  ).subscribe({
+
+    next: () => {
+      this.creazioneAstaInCorso = false;
+      this.astaCreata = true;
+      this.erroreCreazioneAsta = '';
+
+      this.prezzoBaseNuovaAsta = null;
+      this.inizioNuovaAsta = '';
+      this.fineNuovaAsta = '';
+
+      // Recupera l'asta appena creata.
+      this.caricaAsta(annuncioId);
+
+      this.cdr.markForCheck();
+    },
+
+    error: (err) => {
+      console.error('Errore creazione asta:', err);
+
+      this.creazioneAstaInCorso = false;
+
+      if (err.status === 400) {
+        this.erroreCreazioneAsta =
+          'Controlla il prezzo base e le date inserite.';
+      } else if (err.status === 401 || err.status === 403) {
+        this.erroreCreazioneAsta =
+          'Non sei autorizzato a creare questa asta.';
+      } else if (err.status === 404) {
+        this.erroreCreazioneAsta =
+          'Annuncio non disponibile o non appartenente al venditore.';
+      } else if (err.status === 409) {
+        this.erroreCreazioneAsta =
+          'Esiste già un’asta per questo annuncio.';
+
+        this.caricaAsta(annuncioId);
+      } else {
+        this.erroreCreazioneAsta =
+          'Impossibile creare l’asta. Verifica che non sia già stata registrata prima di riprovare.';
+      }
+
+      this.cdr.markForCheck();
+    }
+  });
+}
 
 inviaOfferta(): void {
 

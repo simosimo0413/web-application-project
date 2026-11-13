@@ -31,6 +31,10 @@
 
         }
 
+      @if (utente.ruolo === 'ADMIN' || utente.ruolo === 'ROLE_ADMIN') {
+        <a routerLink="/amministrazione">Amministrazione</a>
+      }
+
       <span class="nav-placeholder">
         Ciao, {{ utente.nome || utente.email }}
       </span>

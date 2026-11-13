@@ -69,6 +69,7 @@ public class VisitaDAO {
                 SELECT 1
                 FROM annunci
                 WHERE id = ?
+                  AND stato = 'ATTIVO'
             )
             """;
     
@@ -137,6 +138,7 @@ public class VisitaDAO {
             ON vend.id = a.venditore_id
         WHERE vi.id = ?
         AND vi.annuncio_id = a.id
+        AND a.stato = 'ATTIVO'
         AND vend.email = ?
         AND vi.confermata = FALSE
         AND vi.data_visita > CURRENT_TIMESTAMP

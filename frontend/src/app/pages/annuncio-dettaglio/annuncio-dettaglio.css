@@ -412,3 +412,33 @@
 }
 
 
+
+
+/* Gestione venditore: modifica, ribasso e ritiro. */
+.sezione-gestione {
+  margin-top: 36px;
+  padding: 28px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+}
+.sezione-gestione h2, .sezione-gestione h3 { color: #1d2939; }
+.modulo-gestione { display: grid; gap: 10px; margin: 24px 0; max-width: 680px; }
+.modulo-gestione label { font-weight: 600; color: #344054; }
+.modulo-gestione input, .modulo-gestione textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid #94a3b8;
+  border-radius: 6px; font: inherit; box-sizing: border-box;
+}
+.modulo-gestione button, .gestione-chiusura button {
+  width: fit-content; padding: 11px 18px; border: 0; border-radius: 6px;
+  background: #175cd3; color: white; font: inherit; font-weight: 600; cursor: pointer;
+}
+.modulo-gestione button:disabled, .gestione-chiusura button:disabled { opacity: 0.5; cursor: not-allowed; }
+.gestione-chiusura { border-top: 1px solid #e2e8f0; padding-top: 16px; }
+.gestione-chiusura .pulsante-chiudi { background: #b42318; }
+.gestione-successo { color: #027a48; font-weight: 600; }
+.gestione-errore { color: #b42318; font-weight: 600; }
+@media (max-width: 768px) {
+  .sezione-gestione { padding: 18px; }
+  .modulo-gestione button, .gestione-chiusura button { width: 100%; }
+}

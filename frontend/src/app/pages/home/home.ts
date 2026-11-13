@@ -1,5 +1,5 @@
 
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ImmobileCard } from '../../components/immobile-card/immobile-card';
@@ -16,6 +16,7 @@ import { AnnuncioService } from '../../services/annuncio';
 export class Home implements OnInit {
 
   private annuncioService = inject(AnnuncioService);
+  private cdr = inject(ChangeDetectorRef);
 
   annunci: Annuncio[] = [];
   caricamento = true;
@@ -33,11 +34,13 @@ export class Home implements OnInit {
       next: (dati) => {
         this.annunci = dati;
         this.caricamento = false;
+        this.cdr.markForCheck();
       },
       error: (errore) => {
         console.error('Errore nel caricamento degli annunci:', errore);
         this.errore = true;
         this.caricamento = false;
+        this.cdr.markForCheck();
       }
     });
   }
