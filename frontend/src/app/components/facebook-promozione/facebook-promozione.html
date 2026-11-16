@@ -1,0 +1,36 @@
+<section class="facebook-promozione" aria-labelledby="titolo-facebook">
+  <h2 id="titolo-facebook">Promuovi su Facebook</h2>
+  <p>Pubblica il tuo annuncio sulla Pagina Facebook collegata al progetto, senza creare sponsorizzazioni a pagamento.</p>
+
+  @if (caricamento) {
+    <p role="status">Verifica configurazione Facebook...</p>
+  } @else {
+    @if (errore) { <p class="facebook-errore" role="alert">{{ errore }}</p> }
+    @if (postId) {
+      <p class="facebook-successo" role="status">
+        Post pubblicato sulla Pagina Facebook. Identificativo: {{ postId }}
+      </p>
+    }
+    @if (stato) {
+      @if (stato.configurato) {
+        <button type="button" (click)="pubblica()" [disabled]="inPubblicazione">
+          {{ inPubblicazione ? 'Pubblicazione in corso...' : 'Pubblica sulla Pagina Facebook' }}
+        </button>
+      } @else {
+        <p class="facebook-avviso">
+          Pubblicazione tramite API non configurata: servono l'ID della Pagina e un token autorizzato nel backend.
+        </p>
+      }
+      @if (condivisioneFacebook; as link) {
+        <a [href]="link" target="_blank" rel="noopener noreferrer">
+          Condividi manualmente su Facebook
+        </a>
+      } @else {
+        <p class="facebook-nota">
+          L'app è locale: per condividere un collegamento che altri possano aprire serve un URL HTTPS pubblico.
+          Se configuri solo l'API, puoi comunque pubblicare il testo dell'annuncio.
+        </p>
+      }
+    }
+  }
+</section>

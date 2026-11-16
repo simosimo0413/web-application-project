@@ -1,5 +1,6 @@
 package it.unical.immobiliare.config;
 
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,9 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.spa())
             .authorizeHttpRequests(auth -> auth
+                // Consenti i dispatch di errore, senza cambiare i permessi delle API.
+                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/annunci", "/api/annunci/**")
                     .permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/auth/csrf")

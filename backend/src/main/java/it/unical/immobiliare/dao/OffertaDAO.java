@@ -41,8 +41,8 @@ public class OffertaDAO {
             FROM aste ast
             JOIN annunci ann
                 ON ann.id = ast.annuncio_id
-            WHERE ast.id = ?
-            FOR UPDATE OF ast
+            WHERE ast.id = ? AND ann.stato = 'ATTIVO'
+            FOR UPDATE OF ast, ann
             """;
 
         return jdbcTemplate.query(

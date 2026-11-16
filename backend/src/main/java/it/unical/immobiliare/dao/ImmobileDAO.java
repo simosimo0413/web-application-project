@@ -41,4 +41,15 @@ public class ImmobileDAO {
             richiesta.descrizione()
         );
     }
+
+    public void aggiornaDati(Long immobileId, it.unical.immobiliare.dto.ModificaAnnuncioRequest richiesta) {
+        jdbcTemplate.update("""
+                UPDATE immobili
+                SET descrizione = ?, superficie_mq = ?, indirizzo = ?, citta = ?, provincia = ?
+                WHERE id = ?
+                """, richiesta.descrizione().trim(), richiesta.superficieMq(),
+                richiesta.indirizzo().trim(), richiesta.citta().trim(),
+                richiesta.provincia(), immobileId);
+    }
+
 }

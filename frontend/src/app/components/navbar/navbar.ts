@@ -1,6 +1,6 @@
 
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
 @Component({
@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth';
 export class Navbar {
 
   readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly uscitaInCorso = signal(false);
   readonly erroreLogout = signal('');
@@ -27,6 +28,7 @@ export class Navbar {
     this.authService.logout().subscribe({
       next: () => {
         this.uscitaInCorso.set(false);
+        void this.router.navigateByUrl('/');
       },
       error: () => {
         this.uscitaInCorso.set(false);

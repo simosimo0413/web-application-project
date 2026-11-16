@@ -1,0 +1,33 @@
+.facebook-promozione {
+  margin-top: 28px;
+  padding: 26px;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+}
+.facebook-promozione h2 { margin-top: 0; color: #1d2939; }
+.facebook-promozione p { color: #475467; line-height: 1.6; }
+.facebook-promozione button,
+.facebook-promozione a {
+  display: inline-block;
+  padding: 11px 18px;
+  border-radius: 7px;
+  background: #1769d6;
+  color: white;
+  border: none;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  margin-right: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.facebook-promozione button:disabled { opacity: .55; cursor: not-allowed; }
+.facebook-promozione .facebook-errore { color: #b42318; }
+.facebook-promozione .facebook-successo { color: #027a48; font-weight: 600; overflow-wrap: anywhere; }
+.facebook-promozione .facebook-avviso { color: #925700; }
+.facebook-promozione .facebook-nota { font-size: 14px; }
+@media (max-width: 600px) {
+  .facebook-promozione { padding: 18px; }
+  .facebook-promozione button, .facebook-promozione a { width: 100%; box-sizing: border-box; text-align: center; }
+}
